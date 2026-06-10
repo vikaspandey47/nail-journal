@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NAIL — Nandi AI Log</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+
+<style>
+  :root {
+    --base:        #020617;
+    --surface:     #0f172a;
+    --elevated:    #1e293b;
+    --border:      #334155;
+    --emerald:     #10b981;
+    --rose:        #f43f5e;
+  }
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--base);
+    color: #f8fafc;
+  }
+  .heading-font { font-family: 'Syne', sans-serif; }
+  .mono-font { font-family: 'JetBrains Mono', monospace; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--base); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body class="h-screen overflow-hidden flex flex-col">
+
+<div class="flex flex-1 overflow-hidden">
+  
+  <aside class="w-64 bg-[#090f22] border-r border-slate-800 flex flex-col justify-between p-4 z-20">
+    <div>
+      <div class="flex items-center gap-3 mb-8 px-2">
+        <div class="w-10 h-10 bg-gradient-to-tr from-emerald-500 to-teal-700 rounded-xl flex items-center justify-center text-xl font-black heading-font text-white shadow-lg">𐔰</div>
+        <div>
+          <h1 class="text-xl font-extrabold heading-font tracking-tight text-white">NAIL</h1>
+          <p class="text-[10px] uppercase font-semibold tracking-widest text-emerald-400 mono-font">Nandi AI Log</p>
+        </div>
+      </div>
+
+      <div class="mb-6 p-3 bg-[#0f172a] border border-slate-800 rounded-xl">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Account Access</span>
+          <span id="sub-status" class="px-2 py-0.5 text-[9px] font-black uppercase rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Verified</span>
+        </div>
+        <div class="flex items-center gap-2 cursor-pointer group" onclick="openProfileModal()">
+          <div class="w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-300 group-hover:bg-slate-700">👤</div>
+          <div class="overflow-hidden flex-1">
+            <p id="sidebar-email" class="text-xs font-medium text-slate-300 truncate group-hover:text-white">Configure Email</p>
+            <p class="text-[10px] text-slate-500">Stripe Sync Settings</p>
+          </div>
+        </div>
+      </div>
+
+      <nav class="space-y-1">
+        <button onclick="switchTab('dashboard')" id="btn-tab-dashboard" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all bg-emerald-500/10 text-emerald-400 border border-emerald-500/10">
+          📊 <span>Performance Terminal</span>
+        </button>
+        <button onclick="switchTab('logger')" id="btn-tab-logger" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 transition-all">
+          ✍️ <span>Log Executed Position</span>
+        </button>
+        <button onclick="switchTab('blueprint')" id="btn-tab-blueprint" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 transition-all">
+          📋 <span>Discipline Blueprint</span>
+        </button>
+        <button onclick="switchTab('ai-audit')" id="btn-tab-ai-audit" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 transition-all relative">
+          🧠 <span class="heading-font font-bold text-transparent bg-gradient-to-r from-emerald-400 via-teal-200 to-teal-400 bg-clip-text">NAIL AI Engine</span>
+          <span class="absolute right-2 px-1.5 py-0.5 text-[8px] bg-indigo-500 text-white rounded font-bold uppercase scale-90">PRO</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="text-[10px] text-slate-500 px-2 font-medium">
+      Data Canvas: <span class="text-emerald-500 font-bold">100% Private Local Storage</span>
+    </div>
+  </aside>
+
+  <main class="flex-1 flex flex-col overflow-hidden bg-gradient-to-b from-[#020617] to-[#070a13]">
+    
+    <header class="h-14 border-b border-slate-900 flex items-center justify-between px-6 bg-[#020617]/40 backdrop-blur-md">
+      <h2 id="current-panel-title" class="text-base font-bold heading-font text-slate-100">Performance Terminal</h2>
+      <div id="discipline-streak-badge" class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-3 py-1 rounded-lg text-xs font-semibold">
+        🔥 Discipline Streak: <span id="streak-count" class="font-black">0 Trades</span>
+      </div>
+    </header>
+
+    <div class="flex-1 overflow-y-auto p-6 space-y-6">
+
+      <section id="tab-view-dashboard" class="space-y-6">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-[#0f172a] border border-slate-800/60 rounded-xl p-4 shadow-xl">
+            <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Net Accounting P&L</p>
+            <h3 id="stat-pnl" class="text-2xl font-bold tracking-tight mono-font text-emerald-400">$0.00</h3>
+          </div>
+          <div class="bg-[#0f172a] border border-slate-800/60 rounded-xl p-4 shadow-xl">
+            <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Win Frequency Rate</p>
+            <h3 id="stat-winrate" class="text-2xl font-bold tracking-tight mono-font text-slate-200">0%</h3>
+          </div>
+          <div class="bg-[#0f172a] border border-slate-800/60 rounded-xl p-4 shadow-xl">
+            <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Total Monitored Ledger Entries</p>
+            <h3 id="stat-count" class="text-2xl font-bold tracking-tight mono-font text-slate-200">0</h3>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 bg-[#0f172a] border border-slate-800/60 p-5 rounded-xl shadow-2xl">
+            <h4 class="text-xs font-bold text-slate-400 mb-4 heading-font uppercase tracking-wider">Equity Growth Track</h4>
+            <div class="h-64 relative"><canvas id="equityChart"></canvas></div>
+          </div>
+          <div class="bg-[#0f172a] border border-slate-800/60 p-5 rounded-xl shadow-2xl">
+            <h4 class="text-xs font-bold text-slate-400 mb-4 heading-font uppercase tracking-wider">Execution Setup Performance Matrix</h4>
+            <div class="h-64 relative"><canvas id="strategyChart"></canvas></div>
+          </div>
+        </div>
+
+        <div class="bg-[#0f172a] border border-slate-800/60 rounded-xl shadow-2xl overflow-hidden">
+          <div class="px-5 py-4 border-b border-slate-900 flex items-center justify-between">
+            <h4 class="text-xs font-bold text-slate-300 heading-font uppercase tracking-wider">Historical Sandbox Ledger</h4>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="bg-slate-900/50 text-slate-400 border-b border-slate-800 uppercase text-[10px] font-bold tracking-wider">
+                  <th class="py-3 px-4">Execution Date</th>
+                  <th class="py-3 px-4">Ticker</th>
+                  <th class="py-3 px-4">Action Mode</th>
+                  <th class="py-3 px-4">Chart Setup Type</th>
+                  <th class="py-3 px-4">Entry Pricing</th>
+                  <th class="py-3 px-4">Current P&L</th>
+                  <th class="py-3 px-4 text-right">Operational Status</th>
+                </tr>
+              </thead>
+              <tbody id="trade-table-body" class="divide-y divide-slate-900 font-medium text-slate-300">
+                </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-view-logger" class="hidden max-w-3xl mx-auto bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
+        <div class="border-b border-slate-900 pb-4">
+          <h3 class="text-base font-bold text-white heading-font">Secure Data Entry Portal</h3>
+          <p class="text-xs text-slate-400">Values are retained safely inside your browser's private local sandboxed engine.</p>
+        </div>
+
+        <form id="trade-form" onsubmit="handleFormSubmit(event)" class="space-y-6">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1.5">Asset Mode Pipeline Selector</label>
+              <select id="f-class" onchange="adaptFormFields()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-slate-700 font-medium">
+                <option value="buying">Option Buying (Long Premium)</option>
+                <option value="selling">Option Selling (Short Premium Credit)</option>
+                <option value="swing">Swing Shares Allocation Engine</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1.5">Asset Identification Ticker</label>
+              <input type="text" id="f-ticker" required placeholder="e.g., INFY, RELIANCE, TSLA" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-slate-700 font-semibold uppercase"/>
+            </div>
+            <div id="box-strategy-dropdown">
+              <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1.5">Chart Setup Classification Strategy</label>
+              <select id="f-setup" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-slate-700 font-medium">
+                </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1.5">Execution Open Entry Date</label>
+              <input type="date" id="f-date" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-slate-700 font-medium"/>
+            </div>
+            <div id="box-entry-price">
+              </div>
+            <div>
+              <label id="lbl-qty" class="block text-[11px] font-semibold text-slate-400 uppercase mb-1.5">Allocation Quantity</label>
+              <input type="number" id="f-qty" required value="1" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-slate-700 font-semibold"/>
+            </div>
+          </div>
+
+          <div class="bg-slate-950/40 border border-slate-800 p-4 rounded-xl">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 heading-font">Behavioral Tracking Metrics (Discipline Blueprint Alignment)</h4>
+            <p class="text-[11px] text-slate-500 mb-3">Check every item you fully adhered to during this position:</p>
+            <div id="form-discipline-checklist" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1.5">Technical Chart Capture (Screenshot String Extraction)</label>
+            <div id="image-dropzone" class="border border-dashed border-slate-800 hover:border-slate-700 rounded-xl p-4 text-center cursor-pointer bg-slate-950/10 relative">
+              <input type="file" id="f-image" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="processAttachedImage(event)"/>
+              <div id="dropzone-prompt" class="space-y-1">
+                <p class="text-xs text-slate-300 font-medium">Drag and drop or click to upload chart visual</p>
+                <p class="text-[10px] text-slate-500">Indexed 100% locally onto your client-side architecture database</p>
+              </div>
+              <div id="image-preview-container" class="hidden flex flex-col items-center gap-2">
+                <img id="img-preview" src="" alt="Preview" class="h-20 rounded border border-slate-800 object-cover shadow"/>
+                <button type="button" onclick="purgeUploadedImage(event)" class="text-[10px] text-rose-400 font-bold uppercase tracking-wider hover:underline">Flush File Attachment</button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1.5">Contextual Execution Commentary Notes</label>
+            <textarea id="f-notes" rows="2" placeholder="Record mental clarity state, system observations, adjustments..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-slate-700 font-medium"></textarea>
+          </div>
+
+          <div class="flex justify-end pt-2">
+            <button type="submit" class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-bold text-xs uppercase px-5 py-2.5 rounded-lg shadow-lg tracking-wider hover:brightness-110">Commit Asset To Ledger</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="tab-view-blueprint" class="hidden max-w-2xl mx-auto bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
+        <div class="border-b border-slate-900 pb-3">
+          <h3 class="text-base font-bold text-white heading-font">Discipline Blueprint Customization Terminal</h3>
+          <p class="text-xs text-slate-400">Configure parameters used to verify behavioral consistency benchmarks across logs.</p>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Immutable Hardcoded Core Rules</h4>
+            <div class="space-y-2">
+              <div class="bg-slate-950/40 px-3 py-2 rounded-lg border border-slate-800/60 text-xs font-medium text-slate-400 flex items-center justify-between">
+                <span>🚫 No FOMO Trading (Chasing validation parameters out of target zones)</span>
+                <span class="text-[9px] text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded uppercase font-bold tracking-wide">Core Engine Default</span>
+              </div>
+              <div class="bg-slate-950/40 px-3 py-2 rounded-lg border border-slate-800/60 text-xs font-medium text-slate-400 flex items-center justify-between">
+                <span>😡 No Revenge Trading (Attempting execution recovery while outside stable mindsets)</span>
+                <span class="text-[9px] text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded uppercase font-bold tracking-wide">Core Engine Default</span>
+              </div>
+              <div class="bg-slate-950/40 px-3 py-2 rounded-lg border border-slate-800/60 text-xs font-medium text-slate-400 flex items-center justify-between">
+                <span>🛡️ Proper Stoploss Placement (Calculated protective invalidation triggers set inside engine)</span>
+                <span class="text-[9px] text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded uppercase font-bold tracking-wide">Core Engine Default</span>
+              </div>
+              <div class="bg-slate-950/40 px-3 py-2 rounded-lg border border-slate-800/60 text-xs font-medium text-slate-400 flex items-center justify-between">
+                <span>📈 Entry only if specific targeted price level breaks structural bounds</span>
+                <span class="text-[9px] text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded uppercase font-bold tracking-wide">Core Engine Default</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t border-slate-900 pt-4 space-y-3">
+            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Custom Tailored Personal Disciplines (Max Allocation Available: 7 rules)</h4>
+            <div id="custom-rules-container" class="space-y-2">
+              </div>
+
+            <div id="add-rule-action-block" class="flex gap-2 pt-2">
+              <input type="text" id="new-rule-input" placeholder="e.g., Ceased operations after taking 2 concurrent losses..." class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-slate-700"/>
+              <button type="button" onclick="appendCustomBlueprintRule()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-xs uppercase rounded-lg shadow">Inject Rule</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-view-ai-audit" class="hidden max-w-4xl mx-auto space-y-6">
+        <div class="bg-gradient-to-r from-[#0f172a] to-[#090f22] border border-indigo-900/30 rounded-2xl p-6 shadow-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-base font-bold text-white heading-font flex items-center gap-2">
+              <span>🧠</span> NAIL Performance Intelligence Audit Console
+            </h3>
+            <p class="text-xs text-indigo-200/70 mt-1 max-w-xl">
+              Packages local historical metrics and discipline parameters directly into an ephemeral cloud check. Processes securely against active Stripe configurations before routing to your Gemini endpoint deployment.
+            </p>
+          </div>
+          <button onclick="triggerNailAudit()" id="btn-run-audit" class="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-xl hover:brightness-110 shrink-0">
+            Run NAIL Intelligence Audit
+          </button>
+        </div>
+
+        <div id="ai-response-viewport" class="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-4 min-h-[260px] flex flex-col items-center justify-center text-center">
+          <div class="text-3xl">🧬</div>
+          <div>
+            <h4 class="text-xs font-bold text-slate-300 heading-font uppercase tracking-wider">Engine Diagnostic Idle Matrix</h4>
+            <p class="text-xs text-slate-500 max-w-xs mx-auto mt-1">Execute the telemetry query trigger command to review behavior diagnostics and correlation analysis maps.</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<div id="profile-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl space-y-4">
+    <div>
+      <h3 class="text-sm font-bold text-white heading-font uppercase tracking-wider">Subscription Access Interface</h3>
+      <p class="text-xs text-slate-400 mt-0.5">Link the registered system target email to unlock active Stripe subscription checks for cloud processing maps.</p>
+    </div>
+    <div>
+      <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Subscriber Target Email Profile</label>
+      <input type="email" id="modal-email-input" placeholder="subscriber@domain.com" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-slate-700 font-semibold"/>
+    </div>
+    <div class="flex justify-end gap-2 pt-2 text-xs">
+      <button onclick="closeProfileModal()" class="px-3 py-1.5 font-semibold text-slate-400 hover:text-slate-200 uppercase">Cancel</button>
+      <button onclick="saveProfileConfiguration()" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold uppercase rounded-lg shadow">Save Verification</button>
+    </div>
+  </div>
+</div>
+
+<div id="close-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl space-y-4">
+    <div>
+      <h3 class="text-sm font-bold text-white heading-font uppercase tracking-wider">Conclude Open Ledger Record</h3>
+      <p class="text-xs text-slate-400 mt-0.5">Declare actual performance termination metrics to compute final values.</p>
+    </div>
+    <div class="space-y-3">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Exit Date Tracker</label>
+          <input type="date" id="close-exit-date" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-slate-700 font-medium"/>
+        </div>
+        <div>
+          <label id="close-price-label" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Exit Price Asset Premium</label>
+          <input type="number" step="0.01" id="close-exit-price" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-slate-700 font-semibold"/>
+        </div>
+      </div>
+      <div>
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Execution Failure/Mistake Tracking Tag</label>
+        <select id="close-mistake" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-slate-700 font-medium">
+          <option value="None">No Mistake Executed (Valid Structural Layout)</option>
+          <option value="Chased Move / FOMO">Chased Move / FOMO Trigger Exception</option>
+          <option value="Held Through Decay">Held Through Expiration Decay (Time Value Bleed)</option>
+          <option value="Exited Prematurely">Exited Prematurely due to fear bounds</option>
+          <option value="Revenge Recovery Attempt">Revenge Recovery Attempt Exception</option>
+          <option value="Invalid Level Entry">Invalid Level Entry (Broke Discipline Framework)</option>
+        </select>
+      </div>
+    </div>
+    <div class="flex justify-end gap-2 pt-2 text-xs">
+      <button onclick="closeCloseModal()" class="px-3 py-1.5 font-semibold text-slate-400 hover:text-slate-200 uppercase">Cancel</button>
+      <button onclick="commitPositionClosure()" class="px-4 py-1.5 bg-rose-600 hover:bg-rose-500 text-white font-bold uppercase rounded-lg shadow">Finalize Trade Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const DB_NAME    = 'NailLocalSandboxDataStore';
+  const DB_VERSION = 1;
+  const STORE_T    = 'UserLedgerTrades';
+  
+  let dbInstance   = null;
+  let allTrades    = [];
+  let attachedImgBase64 = '';
+  let pendingClosureId = null;
+  let appEmail = '';
+
+  let equityChartInstance = null;
+  let strategyChartInstance = null;
+
+  const coreBlueprintDefaults = [
+    "No FOMO Trading",
+    "No Revenge Trading",
+    "Proper Stoploss Placement",
+    "Entry only if technical level breaks"
+  ];
+
+  /* ─── LOCAL STORAGE INITIALIZER ENGINE (INDEXEDDB) ─────────────────── */
+  function dbInit() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = e => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains(STORE_T)) {
+          db.createObjectStore(STORE_T, { keyPath: 'id', autoIncrement: true });
+        }
+      };
+      req.onsuccess = e => { dbInstance = e.target.result; resolve(); };
+      req.onerror   = e => reject(e.target.error);
+    });
+  }
+
+  function dbPut(storeName, data) {
+    return new Promise((resolve, reject) => {
+      const tx = dbInstance.transaction(storeName, 'readwrite');
+      const store = tx.objectStore(storeName);
+      const req = store.put(data);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  function dbGetAll(storeName) {
+    return new Promise((resolve, reject) => {
+      const tx = dbInstance.transaction(storeName, 'readonly');
+      const store = tx.objectStore(storeName);
+      const req = store.getAll();
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  function dbDelete(storeName, id) {
+    return new Promise((resolve, reject) => {
+      const tx = dbInstance.transaction(storeName, 'readwrite');
+      const store = tx.objectStore(storeName);
+      const req = store.delete(id);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  /* ─── TAB NAVIGATION DEPLOYMENTS ──────────────────────────── */
+  function switchTab(targetTab) {
+    ['dashboard', 'logger', 'blueprint', 'ai-audit'].forEach(t => {
+      document.getElementById(`tab-view-${t}`).classList.add('hidden');
+      document.getElementById(`btn-tab-${t}`).className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 transition-all";
+    });
+
+    document.getElementById(`tab-view-${targetTab}`).classList.remove('hidden');
+    const btn = document.getElementById(`btn-tab-${targetTab}`);
+    
+    if (targetTab === 'ai-audit') {
+      btn.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 shadow-md";
+      document.getElementById('current-panel-title').textContent = "NAIL AI Engine";
+    } else {
+      btn.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/10 shadow-md";
+      document.getElementById('current-panel-title').textContent = 
+        targetTab === 'dashboard' ? "Performance Terminal" : 
+        targetTab === 'logger' ? "Secure Data Entry Portal" : "Discipline Blueprint Customization Terminal";
+    }
+
+    if (targetTab === 'dashboard') refreshDashboardMatrix();
+    if (targetTab === 'logger') buildLoggerDisciplineChecklist();
+  }
+
+  /* ─── INTERFACE RENDERING & FORMS LOGIC MATRICES ─────────────────── */
+  function adaptFormFields() {
+    const classification = document.getElementById('f-class').value;
+    const priceBox = document.getElementById('box-entry-price');
+    const qtyLabel = document.getElementById('lbl-qty');
+    const strategyBox = document.getElementById('box-strategy-dropdown');
+
+    // 1. STRATEGY DROPDOWN HANDLING (DYNAMIC CHANGING & HIDING ON SWING)
+    if (classification === 'swing') {
+      strategyBox.classList.add('hidden');
+    } else {
+      strategyBox.classList.remove('hidden');
+      const setupSelect = document.getElementById('f-setup');
+      setupSelect.innerHTML = ''; // Reset strategies
+
+      if (classification === 'buying') {
+        setupSelect.innerHTML = `
+          <option value="Breakout Buying">Breakout Option Buy</option>
+          <option value="Support Reversal Buy">Support Reversal (Bounce Long Call)</option>
+          <option value="Resistance Breakout Buy">Resistance Breakout Strategy</option>
+          <option value="Scalping Momentum Buy">Scalping (Quick Momentum Put/Call)</option>
+        `;
+      } else if (classification === 'selling') {
+        setupSelect.innerHTML = `
+          <option value="Premium Decay Collect">Premium Decay (Theta Collection)</option>
+          <option value="Support Reversal Credit">Support Reversal Credit Spread</option>
+          <option value="Resistance Rejection Short">Resistance Rejection Credit Spread</option>
+          <option value="Range Bound Box Write">Range Bound Writing (Iron Condor)</option>
+        `;
+      }
+    }
+
+    // 2. PRICING BOX FIELD TEXT CONFIGURATIONS
+    if (classification === 'buying') {
+      qtyLabel.textContent = "Contracts Count Volume";
+      priceBox.innerHTML = `
+        <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1.5">Buy Option Premium Price ($)</label>
+        <input type="number" step="0.01" id="f-entry-price" required placeholder="Premium Paid per share" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none font-semibold"/>
+      `;
+    } else if (classification === 'selling') {
+      qtyLabel.textContent = "Contracts Count Volume";
+      priceBox.innerHTML = `
+        <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1.5">Sell Option Premium Collected ($)</label>
+        <input type="number" step="0.01" id="f-entry-price" required placeholder="Premium Received per share" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none font-semibold"/>
+      `;
+    } else {
+      qtyLabel.textContent = "Shares Count Volume";
+      priceBox.innerHTML = `
+        <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1.5">Stock Share Entry Cost Basis ($)</label>
+        <input type="number" step="0.01" id="f-entry-price" required placeholder="Asset Share Entry Price" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none font-semibold"/>
+      `;
+    }
+  }
+
+  function getActiveDisciplineRulesList() {
+    let custom = [];
+    try { custom = JSON.parse(localStorage.getItem('nail_custom_rules')) || []; } catch(e){}
+    return [...coreBlueprintDefaults, ...custom];
+  }
+
+  function buildLoggerDisciplineChecklist() {
+    const el = document.getElementById('form-discipline-checklist');
+    el.innerHTML = '';
+    const items = getActiveDisciplineRulesList();
+    items.forEach((rule, idx) => {
+      el.innerHTML += `
+        <label class="flex items-start gap-2 bg-slate-950/60 p-2 border border-slate-900 rounded-lg cursor-pointer hover:bg-slate-900/40 select-none">
+          <input type="checkbox" data-rule-text="${rule}" class="mt-0.5 rounded text-emerald-500 focus:ring-0 bg-slate-900 border-slate-700"/>
+          <span class="text-[11px] text-slate-300 font-medium leading-tight">${rule}</span>
+        </label>
+      `;
+    });
+  }
+
+  function redrawBlueprintPanel() {
+    let custom = [];
+    try { custom = JSON.parse(localStorage.getItem('nail_custom_rules')) || []; } catch(e){}
+    const container = document.getElementById('custom-rules-container');
+    container.innerHTML = '';
+
+    if (custom.length === 0) {
+      container.innerHTML = `<p class="text-xs text-slate-500 font-medium py-1">No custom metrics declared yet.</p>`;
+    } else {
+      custom.forEach((rule, index) => {
+        container.innerHTML += `
+          <div class="bg-slate-950/40 px-3 py-2 rounded-lg border border-slate-800/60 text-xs font-medium text-slate-300 flex items-center justify-between">
+            <span>🔹 ${rule}</span>
+            <button type="button" onclick="removeCustomBlueprintRule(${index})" class="text-slate-500 hover:text-rose-400 font-bold text-xs">✕</button>
+          </div>
+        `;
+      });
+    }
+
+    if (custom.length >= 7) {
+      document.getElementById('add-rule-action-block').classList.add('hidden');
+    } else {
+      document.getElementById('add-rule-action-block').classList.remove('hidden');
+    }
+  }
+
+  function appendCustomBlueprintRule() {
+    const val = document.getElementById('new-rule-input').value.trim();
+    if (!val) return;
+    let custom = [];
+    try { custom = JSON.parse(localStorage.getItem('nail_custom_rules')) || []; } catch(e){}
+    if (custom.length >= 7) return;
+    custom.push(val);
+    localStorage.setItem('nail_custom_rules', JSON.stringify(custom));
+    document.getElementById('new-rule-input').value = '';
+    redrawBlueprintPanel();
+    buildLoggerDisciplineChecklist(); // Sync choices to logger instantly
+  }
+
+  function removeCustomBlueprintRule(index) {
+    let custom = [];
+    try { custom = JSON.parse(localStorage.getItem('nail_custom_rules')) || []; } catch(e){}
+    custom.splice(index, 1);
+    localStorage.setItem('nail_custom_rules', JSON.stringify(custom));
+    redrawBlueprintPanel();
+    buildLoggerDisciplineChecklist(); // Sync choices to logger instantly
+  }
+
+  /* ─── CLIENT FILE IMAGE SCREENSHOT CORE ENGINES ───────────────── */
+  function processAttachedImage(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      attachedImgBase64 = e.target.result;
+      document.getElementById('img-preview').src = attachedImgBase64;
+      document.getElementById('dropzone-prompt').classList.add('hidden');
+      document.getElementById('image-preview-container').classList.remove('hidden');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function purgeUploadedImage(e) {
+    e.stopPropagation(); e.preventDefault();
+    attachedImgBase64 = '';
+    document.getElementById('f-image').value = '';
+    document.getElementById('image-preview-container').classList.add('hidden');
+    document.getElementById('dropzone-prompt').classList.remove('hidden');
+  }
+
+  /* ─── SUBMISSION & MANAGEMENT CLOSURES EXECUTION CODES ───────── */
+  async function handleFormSubmit(e) {
+    e.preventDefault();
+    
+    const checkboxes = document.querySelectorAll('#form-discipline-checklist input[type="checkbox"]');
+    const checkedRules = [];
+    checkboxes.forEach(box => {
+      if (box.checked) checkedRules.push(box.getAttribute('data-rule-text'));
+    });
+
+    const currentType = document.getElementById('f-class').value;
+    const entryPriceValue = parseFloat(document.getElementById('f-entry-price').value);
+    const quantityValue = parseFloat(document.getElementById('f-qty').value);
+    const strategyDropdown = document.getElementById('f-setup');
+
+    const positionRecord = {
+      type: currentType,
+      ticker: document.getElementById('f-ticker').value.toUpperCase(),
+      setup: currentType === 'swing' ? 'Swing Asset Buy' : strategyDropdown.value,
+      entryDate: document.getElementById('f-date').value,
+      entryPrice: entryPriceValue,
+      qty: quantityValue,
+      notes: document.getElementById('f-notes').value,
+      image: attachedImgBase64,
+      checkedRules: checkedRules,
+      totalRulesCount: getActiveDisciplineRulesList().length,
+      status: 'open',
+      pnl: 0,
+      mistake: 'None'
+    };
+
+    await dbPut(STORE_T, positionRecord);
+    
+    // Reset fields
+    document.getElementById('trade-form').reset();
+    attachedImgBase64 = '';
+    document.getElementById('image-preview-container').classList.add('hidden');
+    document.getElementById('dropzone-prompt').classList.remove('hidden');
+    
+    adaptFormFields();
+    allTrades = await dbGetAll(STORE_T);
+    allTrades.sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate));
+    switchTab('dashboard');
+  }
+
+  function openCloseModal(id, type) {
+    pendingClosureId = id;
+    const label = document.getElementById('close-price-label');
+    if (type === 'buying') label.textContent = "Sell Option Premium Exit Price ($)";
+    else if (type === 'selling') label.textContent = "Buy Back Option Exit Premium ($)";
+    else label.textContent = "Stock Share Exit Settlement Price ($)";
+    document.getElementById('close-modal').classList.remove('hidden');
+  }
+  function closeCloseModal() { document.getElementById('close-modal').classList.add('hidden'); pendingClosureId = null; }
+
+  async function commitPositionClosure() {
+    if (pendingClosureId === null) return;
+    const exitPrice = parseFloat(document.getElementById('close-exit-price').value);
+    const exitDate  = document.getElementById('close-exit-date').value;
+    const mistake   = document.getElementById('close-mistake').value;
+
+    const items = await dbGetAll(STORE_T);
+    const target = items.find(i => i.id === pendingClosureId);
+    if (target) {
+      target.status = 'closed';
+      target.exitDate = exitDate;
+      target.exitPrice = exitPrice;
+      target.mistake = mistake;
+
+      // CORE MATHEMATICAL COMPUTATION EQUATIONS
+      if (target.type === 'buying') {
+        target.pnl = (exitPrice - target.entryPrice) * target.qty * 100;
+      } else if (target.type === 'selling') {
+        target.pnl = (target.entryPrice - exitPrice) * target.qty * 100;
+      } else {
+        target.pnl = (exitPrice - target.entryPrice) * target.qty;
+      }
+      await dbPut(STORE_T, target);
+    }
+    closeCloseModal();
+    document.getElementById('close-exit-price').value = '';
+    allTrades = await dbGetAll(STORE_T);
+    allTrades.sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate));
+    refreshDashboardMatrix();
+  }
+
+  async function purgeTradeRecord(id) {
+    if (!confirm('Purge target entry?')) return;
+    await dbDelete(STORE_T, id);
+    allTrades = await dbGetAll(STORE_T);
+    allTrades.sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate));
+    refreshDashboardMatrix();
+  }
+
+  /* ─── METRICS & VISUAL ANALYTICAL PLOTTINGS ───────────────────────── */
+  function refreshDashboardMatrix() {
+    renderLedgerTable();
+
+    let netPnl = 0, wins = 0, closedCount = 0, currentStreak = 0, streakBroken = false;
+    const setupMetrics = {};
+
+    const chronTrades = [...allTrades].reverse();
+    const curveLabels = ['Start'];
+    const curveData = [0];
+
+    // Compute metrics
+    allTrades.forEach(t => {
+      if (!streakBroken) {
+        if (t.checkedRules && t.checkedRules.length === t.totalRulesCount) {
+          currentStreak++;
+        } else {
+          if (allTrades.length > 0) streakBroken = true; 
+        }
+      }
+    });
+
+    chronTrades.forEach(t => {
+      if (t.status === 'closed') {
+        closedCount++;
+        netPnl += t.pnl;
+        if (t.pnl > 0) wins++;
+        curveLabels.push(t.ticker);
+        curveData.push(netPnl);
+
+        if (!setupMetrics[t.setup]) setupMetrics[t.setup] = { win: 0, total: 0 };
+        setupMetrics[t.setup].total++;
+        if (t.pnl > 0) setupMetrics[t.setup].win++;
+      }
+    });
+
+    const pnlEl = document.getElementById('stat-pnl');
+    pnlEl.textContent = (netPnl >= 0 ? '$' : '-$') + Math.abs(netPnl).toFixed(2);
+    pnlEl.className = `text-2xl font-bold tracking-tight mono-font ${netPnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
+    
+    document.getElementById('stat-winrate').textContent = closedCount > 0 ? Math.round((wins / closedCount) * 100) + '%' : '0%';
+    document.getElementById('stat-count').textContent = allTrades.length;
+    document.getElementById('streak-count').textContent = `${currentStreak} Positions`;
+
+    if (equityChartInstance) equityChartInstance.destroy();
+    const ctxEq = document.getElementById('equityChart').getContext('2d');
+    equityChartInstance = new Chart(ctxEq, {
+      type: 'line',
+      data: {
+        labels: curveLabels,
+        datasets: [{
+          data: curveData,
+          borderColor: netPnl >= 0 ? '#10b981' : '#f43f5e',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          tension: 0.1,
+          pointRadius: 2
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { color: '#1e293b' }, ticks: { color: '#64748b', font: { size: 10 } } },
+          y: { grid: { color: '#1e293b' }, ticks: { color: '#64748b', font: { size: 10 } } }
+        }
+      }
+    });
+
+    if (strategyChartInstance) strategyChartInstance.destroy();
+    const stratLabels = Object.keys(setupMetrics);
+    const stratWinRates = stratLabels.map(k => Math.round((setupMetrics[k].win / setupMetrics[k].total) * 100));
+
+    const ctxSt = document.getElementById('strategyChart').getContext('2d');
+    strategyChartInstance = new Chart(ctxSt, {
+      type: 'bar',
+      data: {
+        labels: stratLabels,
+        datasets: [{
+          data: stratWinRates,
+          backgroundColor: '#334155',
+          borderColor: '#10b981',
+          borderWidth: 1,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 9 } } },
+          y: { min: 0, max: 100, grid: { color: '#1e293b' }, ticks: { color: '#64748b', font: { size: 10 }, callback: v => v + '%' } }
+        }
+      }
+    });
+  }
+
+  function renderLedgerTable() {
+    const tbody = document.getElementById('trade-table-body');
+    tbody.innerHTML = '';
+
+    if (allTrades.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-500 font-medium">No system history tracked inside local framework storage memory.</td></tr>`;
+      return;
+    }
+
+    allTrades.forEach(t => {
+      const tr = document.createElement('tr');
+      tr.className = "hover:bg-slate-900/40 border-b border-slate-900";
+      
+      let typeLabel = t.type === 'buying' ? 'Option Buy' : t.type === 'selling' ? 'Option Sell' : 'Shares';
+      let pricingString = `Entry: ${t.entryPrice.toFixed(2)} (x${t.qty})`;
+      if (t.status === 'closed') {
+        pricingString += ` | Exit: ${t.exitPrice.toFixed(2)}`;
+      }
+
+      let pnlValueString = `<span class="text-[10px] uppercase bg-slate-950 px-2 py-0.5 rounded border border-slate-800 font-bold text-slate-400">Open Baseline</span>`;
+      if (t.status === 'closed') {
+        pnlValueString = `<span class="mono-font font-bold text-xs ${t.pnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${t.pnl >= 0 ? '+$' : '-$'}${Math.abs(t.pnl).toFixed(2)}</span>`;
+      }
+
+      let operationsBlock = t.status === 'open'
+        ? `<button onclick="openCloseModal(${t.id}, '${t.type}')" class="px-2 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded font-bold text-[10px] uppercase tracking-wider hover:bg-emerald-500 hover:text-white">Close Position</button>`
+        : `<div class="flex flex-col items-end"><span class="text-[9px] text-slate-500 uppercase font-bold tracking-wider">Archived Log</span><span class="text-[9px] text-amber-500 font-medium">${t.mistake !== 'None' ? t.mistake : ''}</span></div>`;
+
+      tr.innerHTML = `
+        <td class="py-3 px-4 text-slate-400 font-medium">${t.entryDate}</td>
+        <td class="py-3 px-4 font-bold text-white tracking-wide">${t.ticker}</td>
+        <td class="py-3 px-4"><span class="text-[10px] font-semibold text-slate-300">${typeLabel}</span></td>
+        <td class="py-3 px-4 text-slate-300 font-medium">${t.setup}</td>
+        <td class="py-3 px-4 text-slate-400 mono-font text-[11px]">${pricingString}</td>
+        <td class="py-3 px-4">${pnlValueString}</td>
+        <td class="py-3 px-4 text-right space-x-2">
+          <div class="inline-block align-middle">${operationsBlock}</div>
+          <button onclick="purgeTradeRecord(${t.id})" class="text-slate-600 hover:text-rose-400 align-middle font-bold text-xs px-1">✕</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  /* ─── GATEWAY PROXY SUBSCRIPTION SYNC INTERFACING ───────────────── */
+  function openProfileModal() {
+    document.getElementById('modal-email-input').value = appEmail;
+    document.getElementById('profile-modal').classList.remove('hidden');
+  }
+  function closeProfileModal() { document.getElementById('profile-modal').classList.add('hidden'); }
+  
+  function saveProfileConfiguration() {
+    const val = document.getElementById('modal-email-input').value.trim();
+    if (!val) return alert('Input valid email profile');
+    appEmail = val;
+    localStorage.setItem('nail_email_sync', val);
+    document.getElementById('sidebar-email').textContent = val;
+    closeProfileModal();
+  }
+
+  /* ─── CLOUD HANDSHAKE VERIFICATION & AI REQUEST COMPILATIONS ────── */
+  async function triggerNailAudit() {
+    if (!appEmail) {
+      alert('Subscription Sync Required: Define your active account profile email inside side settings before building telemetry requests.');
+      openProfileModal();
+      return;
+    }
+
+    const viewport = document.getElementById('ai-response-viewport');
+    viewport.className = "bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-2xl flex flex-col items-center justify-center text-center space-y-3 min-h-[260px]";
+    viewport.innerHTML = `
+      <div class="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+      <p class="text-xs font-bold uppercase text-emerald-400 tracking-wider mono-font">Validating Subscription Status & Querying Gemini Canvas Engine...</p>
+    `;
+
+    try {
+      const logPackage = allTrades.map(t => ({
+        ticker: t.ticker, type: t.type, setup: t.setup, entryDate: t.entryDate,
+        exitDate: t.exitDate || 'Open', pnl: t.pnl, status: t.status, notes: t.notes,
+        mistakeTag: t.mistake, rulesChecked: t.checkedRules, possibleRulesCount: t.totalRulesCount
+      }));
+
+      const response = await fetch('/api/nail-audit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: appEmail, logs: logPackage })
+      });
+
+      const resData = await response.json();
+      if (!response.ok) throw new Error(resData.error || 'Gateway endpoint system breakdown error.');
+
+      viewport.className = "bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-2xl text-left text-xs text-slate-300 leading-relaxed space-y-4 whitespace-pre-wrap font-medium";
+      viewport.innerHTML = `
+        <div class="border-b border-slate-900 pb-2 flex justify-between items-center select-none">
+          <span class="text-[10px] font-black uppercase text-emerald-400 tracking-widest mono-font">NAIL Synthesis Diagnostic Manifest</span>
+          <span class="text-[9px] px-2 py-0.5 bg-slate-950 rounded border border-slate-800 text-slate-500 font-bold font-mono">Gemini Flash AI Core</span>
+        </div>
+        <div>${resData.analysis}</div>
+      `;
+    } catch(err) {
+      viewport.className = "bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-2xl flex flex-col items-center justify-center text-center space-y-2 min-h-[260px]";
+      viewport.innerHTML = `
+        <div class="text-2xl">⚠️</div>
+        <h4 class="text-xs font-bold text-rose-400 tracking-wider uppercase">Audit Pipeline Exception Encountered</h4>
+        <p class="text-xs text-slate-400 max-w-xs">${err.message}</p>
+        <a href="#" class="mt-2 inline-block text-xs text-emerald-400 hover:underline font-bold uppercase tracking-wider">Renew Active License Profile</a>
+      `;
+    }
+  }
+
+  /* ─── SYSTEM INITIALIZATION PLATFORM SYSTEM BOOT ─────────────────── */
+  window.onload = async () => {
+    await dbInit();
+    allTrades = await dbGetAll(STORE_T);
+    allTrades.sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate));
+
+    const emailCache = localStorage.getItem('nail_email_sync');
+    if (emailCache) {
+      appEmail = emailCache;
+      document.getElementById('sidebar-email').textContent = emailCache;
+    }
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    document.getElementById('f-date').value = todayStr;
+    document.getElementById('close-exit-date').value = todayStr;
+
+    adaptFormFields();
+    redrawBlueprintPanel();
+    refreshDashboardMatrix();
+  };
+</script>
+</body>
+</html>
