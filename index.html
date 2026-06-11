@@ -1,704 +1,772 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>NAIL — Nandi AI Log</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NAIL // Performance Analytics Sandbox Terminal</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<style>
-  :root {
-    --base:        #020617;
-    --surface:     #0f172a;
-    --elevated:    #1e293b;
-    --border:      #334155;
-    --emerald:     #10b981;
-    --rose:        #f43f5e;
-  }
-  body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--base);
-    color: #f8fafc;
-  }
-  .heading-font { font-family: 'Syne', sans-serif; }
-  .mono-font { font-family: 'JetBrains Mono', monospace; }
-
-  /* Custom styling for sleek dark scrolls */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: var(--base); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #475569; }
-</style>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #0b0f17;
+    }
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    /* Custom Neon Glow Styles */
+    .glow-green { box-shadow: 0 0 15px rgba(16, 185, 129, 0.15); }
+    .glow-amber { box-shadow: 0 0 15px rgba(245, 158, 11, 0.15); }
+    .glow-cyan { box-shadow: 0 0 15px rgba(6, 182, 212, 0.15); }
+    
+    /* Custom scrollbar tracking layout */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+  </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-emerald-500/20 selection:text-emerald-400">
+<body class="text-slate-200 min-h-screen flex flex-col antialiased bg-[#080c14]">
 
-  <header class="border-b border-slate-800 bg-[#020617]/80 backdrop-blur sticky top-0 z-40 px-6 py-4 flex items-center justify-between">
+  <header class="border-b border-slate-800/80 bg-[#0c1220]/90 backdrop-blur sticky top-0 z-50 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
     <div class="flex items-center space-x-3">
-      <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center font-black text-slate-950 heading-font tracking-tighter text-sm">N</div>
+      <div class="h-9 w-9 rounded-lg bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center font-bold tracking-tighter text-white select-none shadow-md">N</div>
       <div>
-        <h1 class="text-sm font-bold tracking-wider heading-style uppercase tracking-widest text-slate-200">NAIL</h1>
-        <p class="text-[10px] text-slate-500 font-mono uppercase tracking-wider">Nandi AI Log Performance Terminal</p>
+        <h1 class="text-md font-bold tracking-tight text-white flex items-center gap-2">
+          NAIL PERFORMANCE SYSTEM <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded">V2.5 Terminal</span>
+        </h1>
+        <p class="text-xs text-slate-400">Institutional Technical Execution & Diagnostic Analytics</p>
       </div>
     </div>
-    
-    <div class="flex items-center space-x-4">
-      <button onclick="toggleSidebar(true)" class="flex items-center space-x-2 px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900/50 hover:bg-slate-900 transition text-xs font-medium text-slate-300">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span id="sidebar-email" class="font-mono">No Workspace Loaded</span>
-      </button>
+
+    <div class="flex items-center gap-3">
+      <div class="bg-[#111a2e] border border-slate-700/60 rounded-xl p-1.5 flex items-center gap-2 shadow-inner">
+        <input type="email" id="userEmailField" placeholder="Enter Registered Email" 
+               class="bg-transparent text-xs px-3 py-1.5 text-white placeholder-slate-500 outline-none w-52 font-mono">
+        <button onclick="handleProfileSync()" id="syncBtn" 
+                class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold text-xs px-4 py-1.5 rounded-lg transition-all shadow-md active:scale-95">
+          Sync Profile
+        </button>
+      </div>
+      <div id="licenseBadge" class="hidden text-xs font-mono font-bold px-3 py-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl flex items-center gap-1.5">
+        <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span> SYSTEM ACTIVE
+      </div>
     </div>
   </header>
 
-  <main class="flex-1 max-w-[1600px] w-full mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-4 px-6 pt-6">
+    <div class="bg-[#0e1726] border border-slate-800/80 rounded-2xl p-4 flex items-center justify-between glow-green">
+      <div>
+        <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Historical Win Rate</p>
+        <h3 id="hudWinRate" class="text-3xl font-bold text-emerald-400 font-mono mt-1">0.0%</h3>
+      </div>
+      <div class="p-3 rounded-xl bg-emerald-500/5 text-emerald-400 border border-emerald-500/10">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      </div>
+    </div>
+    <div class="bg-[#0e1726] border border-slate-800/80 rounded-2xl p-4 flex items-center justify-between glow-amber">
+      <div>
+        <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Rule Adherence Index</p>
+        <h3 id="hudAdherence" class="text-3xl font-bold text-amber-400 font-mono mt-1">0.0%</h3>
+      </div>
+      <div class="p-3 rounded-xl bg-amber-500/5 text-amber-400 border border-amber-500/10">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+      </div>
+    </div>
+    <div class="bg-[#0e1726] border border-slate-800/80 rounded-2xl p-4 flex items-center justify-between glow-cyan">
+      <div>
+        <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Ledger Return</p>
+        <h3 id="hudReturn" class="text-3xl font-bold text-cyan-400 font-mono mt-1">0.00x</h3>
+      </div>
+      <div class="p-3 rounded-xl bg-cyan-500/5 text-cyan-400 border border-cyan-500/10">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+      </div>
+    </div>
+  </section>
+
+  <div class="px-6 pt-6 flex border-b border-slate-800/60 gap-2">
+    <button onclick="switchTab('terminal')" id="tab-terminal" class="px-5 py-2.5 border-b-2 border-cyan-500 text-cyan-400 font-medium text-sm transition-all flex items-center gap-2">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+      📈 Performance Workspace Terminal
+    </button>
+    <button onclick="switchTab('sandbox')" id="tab-sandbox" class="px-5 py-2.5 border-b-2 border-transparent text-slate-400 hover:text-slate-200 font-medium text-sm transition-all flex items-center gap-2">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+      🧪 AI Technical Chart Sandbox Scanner
+    </button>
+  </div>
+
+  <main class="flex-1 p-6 max-w-[1600px] w-full mx-auto">
     
-    <section class="lg:col-span-4 space-y-6 flex flex-col">
-      <div class="bg-[#0f172a] border border-slate-800/80 rounded-2xl p-5 flex flex-col space-y-4 shadow-xl">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-          <h2 class="text-xs font-bold font-mono tracking-widest uppercase text-emerald-400">Journal Terminal Entry</h2>
-          <span class="text-[9px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded font-mono font-bold uppercase tracking-wider">IndexedDB Cache</span>
+    <div id="view-terminal" class="space-y-6">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-[#0e1726] border border-slate-800/80 rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-cyan-400"></span> Chronological Balance Equity Curve
+            </h4>
+            <span class="text-xs font-mono bg-slate-800 px-2 py-0.5 rounded text-slate-400">Live Metric</span>
+          </div>
+          <div class="h-64 relative">
+            <canvas id="equityCurveChart"></canvas>
+          </div>
         </div>
 
-        <form id="trade-form" onsubmit="handleFormSubmit(event)" class="space-y-4 text-xs">
-          <div>
-            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Asset Mode Group</label>
-            <select id="f-type" onchange="adaptFormOptions()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 font-medium focus:outline-none focus:border-emerald-500 transition">
-              <option value="Option Buying">Option Buying</option>
-              <option value="Option Selling">Option Selling</option>
-              <option value="Swing Shares">Swing Shares</option>
-            </select>
+        <div class="bg-[#0e1726] border border-slate-800/80 rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-amber-400"></span> Discipline Rule Adherence vs. P&L Matrix
+            </h4>
+            <span class="text-xs font-mono bg-slate-800 px-2 py-0.5 rounded text-slate-400">Strategy Sync</span>
+          </div>
+          <div class="h-64 relative">
+            <canvas id="disciplineMatrixChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+        
+        <div class="bg-[#0e1726] border border-slate-800/80 rounded-2xl p-5 xl:col-span-5 space-y-4">
+          <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider border-b border-slate-800/80 pb-2">Log Active Execution Entry</h3>
+          
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-xs font-medium text-slate-400 block mb-1">Asset Ticker</label>
+              <input type="text" id="logTicker" placeholder="e.g., NIFTY" class="w-full bg-[#121c2e] border border-slate-700/60 rounded-xl px-3 py-2 text-sm text-white font-mono outline-none focus:border-cyan-500 transition-all">
+            </div>
+            <div>
+              <label class="text-xs font-medium text-slate-400 block mb-1">Strategy Type</label>
+              <select id="logStrategy" class="w-full bg-[#121c2e] border border-slate-700/60 rounded-xl px-3 py-2 text-sm text-white font-mono outline-none focus:border-cyan-500 transition-all">
+                <option value="Opening Range Volatility Breakout">Opening Range Breakout</option>
+                <option value="Momentum Scalp Breakdown Run">Momentum Scalp Breakdown</option>
+                <option value="EMA Trend Crossover Follow">EMA Trend Follow</option>
+                <option value="Historical Support/Resistance Reversal">S/R Zone Reversal</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3">
+            <div>
+              <label class="text-xs font-medium text-slate-400 block mb-1">P/L (Units)</label>
+              <input type="number" id="logPnl" placeholder="e.g., 40" class="w-full bg-[#121c2e] border border-slate-700/60 rounded-xl px-3 py-2 text-sm text-white font-mono outline-none focus:border-cyan-500 transition-all">
+            </div>
+            <div>
+              <label class="text-xs font-medium text-slate-400 block mb-1">Risk Return (RoR)</label>
+              <input type="number" step="0.01" id="logRor" placeholder="e.g., 0.04" class="w-full bg-[#121c2e] border border-slate-700/60 rounded-xl px-3 py-2 text-sm text-white font-mono outline-none focus:border-cyan-500 transition-all">
+            </div>
+            <div>
+              <label class="text-xs font-medium text-slate-400 block mb-1">Outcome</label>
+              <select id="logStatus" class="w-full bg-[#121c2e] border border-slate-700/60 rounded-xl px-3 py-2 text-sm text-white font-mono outline-none focus:border-cyan-500 transition-all">
+                <option value="Win">WIN</option>
+                <option value="Loss">LOSS</option>
+              </select>
+            </div>
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Ticker / Symbol</label>
-              <input type="text" id="f-ticker" required placeholder="e.g. NIFTY / RELIANCE" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 font-medium uppercase placeholder:text-slate-700 focus:outline-none focus:border-emerald-500 transition"/>
+              <label class="text-xs font-medium text-slate-400 block mb-1">Rules Passed</label>
+              <input type="number" id="logPassedRules" placeholder="Passed (Max 3)" max="3" min="0" class="w-full bg-[#121c2e] border border-slate-700/60 rounded-xl px-3 py-2 text-sm text-white font-mono outline-none focus:border-cyan-500 transition-all">
             </div>
             <div>
-              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Execution Entry Date</label>
-              <input type="date" id="f-date" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 font-medium font-mono focus:outline-none focus:border-emerald-500 transition"/>
-            </div>
-          </div>
-
-          <div id="dynamic-strategy-block">
-            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Technical Setup Strategy</label>
-            <select id="f-strategy" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 font-medium focus:outline-none focus:border-emerald-500 transition"></select>
-          </div>
-
-          <div class="grid grid-cols-3 gap-2">
-            <div>
-              <label id="lbl-price" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Entry Px</label>
-              <input type="number" step="any" id="f-entryPrice" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-2 text-slate-200 font-medium focus:outline-none focus:border-emerald-500 transition"/>
-            </div>
-            <div>
-              <label id="lbl-qty" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Contracts</label>
-              <input type="number" id="f-qty" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-2 text-slate-200 font-medium focus:outline-none focus:border-emerald-500 transition"/>
-            </div>
-            <div>
-              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">R-Risk Model</label>
-              <input type="number" step="any" id="f-risk" required placeholder="INR Value" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-2 text-slate-200 font-medium placeholder:text-slate-700 focus:outline-none focus:border-emerald-500 transition"/>
+              <label class="text-xs font-medium text-slate-400 block mb-1">Total Setup Rules</label>
+              <input type="number" id="logTotalRules" value="3" disabled class="w-full bg-[#121c2e]/50 border border-slate-800 text-slate-500 rounded-xl px-3 py-2 text-sm font-mono cursor-not-allowed">
             </div>
           </div>
 
           <div>
-            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Discipline Verification Framework</label>
-            <div id="discipline-checklist" class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-3 max-h-[140px] overflow-y-auto space-y-2"></div>
+            <label class="text-xs font-medium text-slate-400 block mb-1">Execution Workflow Notes</label>
+            <textarea id="logNotes" placeholder="Log setup observations or behavioral markers here..." rows="2" class="w-full bg-[#121c2e] border border-slate-700/60 rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-cyan-500 transition-all resize-none"></textarea>
+          </div>
+
+          <div>
+            <label class="text-xs font-medium text-slate-400 block mb-1">Attach Executed Chart Screenshot <span class="text-slate-500">(Optional Integration)</span></label>
+            <div id="journalDropZone" class="border-2 border-dashed border-slate-700 hover:border-cyan-500/60 rounded-xl p-4 transition-all text-center cursor-pointer bg-[#0c1220]/60 relative group">
+              <input type="file" id="journalFileInput" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
+              <div class="space-y-1">
+                <svg class="w-6 h-6 text-slate-500 group-hover:text-cyan-400 mx-auto transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                <p id="journalDropLabel" class="text-xs text-slate-400 font-medium">Drag & Drop Chart Image or <span class="text-cyan-400">Browse</span></p>
+                <p class="text-[10px] text-slate-500 font-mono">PNG, JPG formats supported</p>
+              </div>
+              <div id="journalThumbContainer" class="hidden mt-2 border border-slate-700 rounded-lg overflow-hidden max-h-24 bg-black/40">
+                <img id="journalThumbImg" src="" class="w-full object-contain max-h-24">
+              </div>
+            </div>
+          </div>
+
+          <button onclick="commitNewJournalRow()" class="w-full py-2.5 bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-600 hover:to-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition-all active:scale-[0.98] uppercase tracking-wider">
+            Commit Position Entry to Storage
+          </button>
+        </div>
+
+        <div class="xl:col-span-7 space-y-6">
+          
+          <div class="bg-[#0e1726] border border-slate-800/80 rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-800/80 pb-2">
+              <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider">Active Execution Ledger Sessions</h3>
+              <button onclick="clearLedgerRecords()" class="text-[10px] font-mono text-rose-400 bg-rose-500/5 hover:bg-rose-500/10 px-2 py-1 rounded border border-rose-500/10 transition-all">Reset Ledger</button>
+            </div>
             
-            <div class="mt-2 flex items-center space-x-2">
-              <input type="text" id="custom-rule-input" placeholder="Inject Custom Behavioral Rule Guidelines..." class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-[11px] text-slate-300 placeholder:text-slate-700 focus:outline-none focus:border-emerald-500 transition"/>
-              <button type="button" onclick="injectCustomRule()" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono text-[10px] font-bold rounded-lg transition uppercase">Inject Rule</button>
+            <div class="overflow-x-auto w-full">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="border-b border-slate-800 text-slate-400 uppercase font-mono tracking-wider bg-[#0c1220]/40">
+                    <th class="py-2.5 px-3">ID</th>
+                    <th class="py-2.5 px-3">Ticker</th>
+                    <th class="py-2.5 px-3">Strategy Framework</th>
+                    <th class="py-2.5 px-3">P/L (U)</th>
+                    <th class="py-2.5 px-3">RoR</th>
+                    <th class="py-2.5 px-3 text-center">Rules (P/T)</th>
+                  </tr>
+                </thead>
+                <tbody id="ledgerTableRows" class="divide-y divide-slate-800/60 font-mono">
+                  </tbody>
+              </table>
             </div>
           </div>
 
-          <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-slate-950 font-bold font-mono tracking-widest rounded-xl shadow-lg transition uppercase">Commit Position Record</button>
-        </form>
-      </div>
-    </section>
+          <div class="bg-[#0e1726] border border-slate-800/80 rounded-2xl p-5 space-y-4 relative">
+            <div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
+              <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                ⚡ NAIL Diagnostic Manifest Reporting Panel
+              </h3>
+              <button onclick="triggerSynthesisEngineAudit()" id="auditBtn" 
+                      class="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold text-xs rounded-xl shadow-md transition-all uppercase tracking-wider flex items-center gap-1.5">
+                Run Synthesis Audit
+              </button>
+            </div>
 
-    <section class="lg:col-span-8 space-y-6 flex flex-col">
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div class="bg-[#0f172a] border border-slate-800/60 rounded-xl p-4 flex flex-col justify-between">
-          <span class="text-[10px] font-mono font-bold tracking-wider text-slate-400 uppercase">Gross Trades</span>
-          <span id="metric-gross" class="text-xl font-bold font-mono heading-font mt-1 text-slate-100">0</span>
-        </div>
-        <div class="bg-[#0f172a] border border-slate-800/60 rounded-xl p-4 flex flex-col justify-between">
-          <span class="text-[10px] font-mono font-bold tracking-wider text-slate-400 uppercase">Win Ratio Model</span>
-          <span id="metric-winrate" class="text-xl font-bold font-mono heading-font mt-1 text-emerald-400">0%</span>
-        </div>
-        <div class="bg-[#0f172a] border border-slate-800/60 rounded-xl p-4 flex flex-col justify-between">
-          <span class="text-[10px] font-mono font-bold tracking-wider text-slate-400 uppercase">Net Realized Points</span>
-          <span id="metric-pnl" class="text-xl font-bold font-mono heading-font mt-1 text-slate-200">0.00</span>
-        </div>
-        <div class="bg-[#0f172a] border border-slate-800/60 rounded-xl p-4 flex flex-col justify-between">
-          <span class="text-[10px] font-mono font-bold tracking-wider text-slate-400 uppercase">Behavioral Score</span>
-          <span id="metric-discipline" class="text-xl font-bold font-mono heading-font mt-1 text-slate-200">100%</span>
-        </div>
-      </div>
+            <div id="lockoutLayerMask" class="hidden absolute inset-0 bg-[#0c1220]/95 backdrop-blur-sm z-40 rounded-2xl flex flex-col items-center justify-center p-6 text-center">
+              <div class="p-3 bg-amber-500/10 text-amber-400 rounded-2xl border border-amber-500/20 mb-3 animate-bounce">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+              </div>
+              <h4 class="text-md font-bold text-white mb-1">Access Authorization Shield Activated</h4>
+              <p id="lockoutNarrativeText" class="text-xs text-slate-400 max-w-sm mb-4">Please input your registered subscriber profile email address at the top navigation portal link to synchronize server credentials.</p>
+              <a href="https://forms.google.com" id="renewalAnchorBtn" target="_blank" 
+                 class="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-bold text-xs rounded-xl shadow-md uppercase tracking-wider hover:opacity-90 transition-all">
+                Purchase Terminal Subscription Access License
+              </a>
+            </div>
 
-      <div class="bg-[#0f172a] border border-slate-800 rounded-2xl p-5 flex flex-col space-y-4 shadow-xl">
-        <div class="flex flex-col sm:flex-items-center sm:flex-row sm:justify-between gap-3 border-b border-slate-800 pb-3">
-          <div>
-            <h3 class="text-xs font-bold font-mono tracking-widest text-slate-200 uppercase">NAIL Intelligence Audit Console</h3>
-            <p class="text-[10px] text-slate-500 font-mono mt-0.5">Synthesis parsing engine evaluation across logged journal telemetry</p>
+            <div id="accordionStackBlock" class="hidden space-y-2">
+              
+              <div class="border border-slate-800 bg-[#0a101d] rounded-xl overflow-hidden">
+                <button onclick="toggleAccordion('accDrawerSummary')" class="w-full px-4 py-3 bg-[#0d1526] text-left text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center justify-between hover:bg-[#111b30] transition-all">
+                  <span>Section I // Executive Terminal Summary</span>
+                  <svg id="arrow-accDrawerSummary" class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="content-accDrawerSummary" class="hidden p-4 text-xs text-slate-300 leading-relaxed font-mono whitespace-pre-line border-t border-slate-800">
+                  </div>
+              </div>
+
+              <div class="border border-slate-800 bg-[#0a101d] rounded-xl overflow-hidden">
+                <button onclick="toggleAccordion('accDrawerBehavior')" class="w-full px-4 py-3 bg-[#0d1526] text-left text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center justify-between hover:bg-[#111b30] transition-all">
+                  <span>Section II // Behavioral & Technical Discipline Audit</span>
+                  <svg id="arrow-accDrawerBehavior" class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="content-accDrawerBehavior" class="hidden p-4 text-xs text-slate-300 leading-relaxed font-mono whitespace-pre-line border-t border-slate-800">
+                  </div>
+              </div>
+
+              <div class="border border-slate-800 bg-[#0a101d] rounded-xl overflow-hidden">
+                <button onclick="toggleAccordion('accDrawerAction')" class="w-full px-4 py-3 bg-[#0d1526] text-left text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center justify-between hover:bg-[#111b30] transition-all">
+                  <span>Section III // Tactical Roadmap Action Steps</span>
+                  <svg id="arrow-accDrawerAction" class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="content-accDrawerAction" class="hidden p-4 text-xs text-slate-300 leading-relaxed font-mono whitespace-pre-line border-t border-slate-800">
+                  </div>
+              </div>
+
+            </div>
+
+            <div id="emptyAuditStateNotice" class="text-center py-6 text-slate-500 text-xs font-mono">
+              Ready to process historical sequence entries. Click 'Run Synthesis Audit' above.
+            </div>
+
           </div>
-          <button onclick="runAudit()" class="px-5 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold font-mono text-xs rounded-xl tracking-wider uppercase transition shadow-md self-start sm:self-center">Run NAIL Intelligence Audit</button>
-        </div>
-
-        <div id="audit-viewport" class="bg-slate-950/60 border border-slate-900 rounded-xl p-6 min-h-[140px] flex items-center justify-center text-center">
-          <p class="text-xs text-slate-500 font-mono max-w-md">Initialize performance analysis mapping payload matrix. Data logs will be calculated by the engine to output performance diagnostics blueprints.</p>
         </div>
       </div>
+    </div>
 
-      <div class="bg-[#0f172a] border border-slate-800 rounded-2xl p-5 flex flex-col flex-1 shadow-xl min-h-[350px]">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
-          <h3 class="text-xs font-bold font-mono tracking-widest text-slate-200 uppercase">Active Performance Registry Logs</h3>
-          <span id="ledger-count" class="text-[10px] bg-slate-950 border border-slate-800 px-2 py-0.5 rounded font-mono font-bold text-slate-400">0 Tracks Loaded</span>
+    <div id="view-sandbox" class="hidden space-y-6">
+      <div class="bg-[#0e1726] border border-slate-800/80 rounded-2xl p-6 max-w-3xl mx-auto space-y-6 relative">
+        
+        <div class="text-center max-w-md mx-auto space-y-2">
+          <h2 class="text-lg font-bold text-white tracking-tight">AI Technical Chart Structure Sandbox</h2>
+          <p class="text-xs text-slate-400">Upload a clean screenshot of any stock or option candlestick asset structure layout. NAIL will calculate institutional entry, stop loss, and exit target brackets instantly.</p>
         </div>
 
-        <div class="flex-1 overflow-x-auto">
-          <table class="w-full text-left text-xs border-collapse">
-            <thead>
-              <tr class="border-b border-slate-800 text-slate-400 font-mono text-[10px] tracking-wider uppercase">
-                <th class="py-3 px-3">Date Matrix</th>
-                <th class="py-3 px-3">Ticker</th>
-                <th class="py-3 px-3">Asset Mode</th>
-                <th class="py-3 px-3">Strategy Framework</th>
-                <th class="py-3 px-3 text-right">Metrics Logged</th>
-                <th class="py-3 px-3 text-center">Status</th>
-                <th class="py-3 px-3 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="ledger-tbody" class="divide-y divide-slate-900 font-medium text-slate-300">
-              </tbody>
-          </table>
+        <div id="sandboxDropZone" class="border-2 border-dashed border-slate-700 hover:border-cyan-500 rounded-2xl p-8 text-center bg-[#0c1220]/60 transition-all cursor-pointer relative group">
+          <input type="file" id="sandboxFileInput" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
+          <div class="space-y-3">
+            <div class="h-12 w-12 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mx-auto border border-cyan-500/20 group-hover:scale-110 transition-transform">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+            </div>
+            <div>
+              <p class="text-sm text-slate-200 font-semibold">Drop Technical Candlestick Screenshot here</p>
+              <p class="text-xs text-slate-400 mt-1">or click to manually map files inside system path explorer</p>
+            </div>
+            <p class="text-[10px] font-mono text-slate-500 uppercase tracking-widest">Supported: PNG, JPEG, WEBP // Maximum resolution auto optimized</p>
+          </div>
+
+          <div id="sandboxPreviewFrame" class="hidden mt-4 border border-slate-700 rounded-xl overflow-hidden max-h-72 bg-black/50 relative">
+            <img id="sandboxPreviewImg" src="" class="w-full h-full object-contain max-h-72">
+            <button onclick="resetSandboxUploadFrame(event)" class="absolute top-3 right-3 bg-black/70 hover:bg-rose-600/90 text-white font-bold p-1.5 rounded-lg text-xs font-mono transition-all">Remove</button>
+          </div>
         </div>
+
+        <button onclick="executeSandboxTechnicalAnalysisScan()" id="sandboxScanBtn" 
+                class="w-full py-3 bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-600 hover:to-indigo-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          Execute Structural Scanner Evaluation
+        </button>
+
+        <div id="sandboxResultBox" class="hidden border border-slate-800 bg-[#090f1a] rounded-xl p-4 font-mono text-xs text-slate-300 leading-relaxed whitespace-pre-line">
+          </div>
+
       </div>
-    </section>
+    </div>
+
   </main>
 
-  <div id="sidebar-drawer" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-50 flex justify-end">
-    <div class="w-full max-w-md bg-[#0f172a] border-l border-slate-800 h-full p-6 shadow-2xl flex flex-col space-y-6 transform translate-x-full transition-transform duration-300" id="sidebar-panel">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
-        <div>
-          <h3 class="text-sm font-bold font-mono text-slate-100 uppercase tracking-wider">Workspace Profile Environment</h3>
-          <p class="text-[10px] text-slate-500 font-mono">Sync profile credentials to communicate with cloud analytics matrix</p>
-        </div>
-        <button onclick="toggleSidebar(false)" class="w-8 h-8 rounded-lg border border-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-200 hover:bg-slate-900 font-mono text-xs transition">✕</button>
-      </div>
-
-      <div class="space-y-4 text-xs">
-        <div>
-          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Registered Subscriber Identity Email</label>
-          <div class="flex items-center space-x-2">
-            <input type="email" id="profile-email-input" placeholder="e.g. user@domain.com" class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 font-medium font-mono focus:outline-none focus:border-emerald-500 transition"/>
-            <button onclick="saveWorkspaceEmail()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold font-mono rounded-lg transition uppercase tracking-wide">Sync Profile</button>
-          </div>
-          <p class="text-[9px] text-slate-500 font-mono mt-1 leading-normal">This address dictates security handshakes with your subscription profiles during system metrics generation audits.</p>
-        </div>
-      </div>
-
-      <div class="border-t border-slate-800/80 pt-4 flex-1 flex flex-col justify-between">
-        <div>
-          <h4 class="text-[10px] font-bold font-mono tracking-wider text-slate-400 uppercase mb-2">Sandbox Cache Data Governance</h4>
-          <p class="text-[11px] text-slate-400 leading-relaxed mb-3">All trading journal configuration tables, custom behavioral guidelines, and transactions are securely encrypted locally inside your personal browser engine sandbox.</p>
-        </div>
-        <div class="bg-slate-950 border border-slate-900 p-4 rounded-xl space-y-1">
-          <p class="text-[10px] font-bold font-mono text-slate-400 uppercase">Core Framework Version</p>
-          <p class="text-[11px] text-slate-500 leading-normal">NAIL Production Build 2.4 (Stable Edge Distributed Architecture Hub)</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="exit-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-200 z-50 flex items-center justify-center p-4">
-    <div class="w-full max-w-lg bg-[#0f172a] border border-slate-800 rounded-2xl shadow-2xl p-6 space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="text-xs font-bold font-mono tracking-widest text-slate-200 uppercase">Position Exit Settlement Registry</h3>
-        <button onclick="toggleExitModal(false)" class="text-slate-500 hover:text-slate-300 text-sm">✕</button>
-      </div>
-
-      <form id="exit-form" onsubmit="handleExitSubmit(event)" class="space-y-4 text-xs">
-        <input type="hidden" id="exit-trade-id"/>
-        
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label id="lbl-exit-price" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Exit Px Block</label>
-            <input type="number" step="any" id="f-exitPrice" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 font-medium focus:outline-none focus:border-emerald-500 transition"/>
-          </div>
-          <div>
-            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Settlement Exit Date</label>
-            <input type="date" id="f-exitDate" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 font-medium font-mono focus:outline-none focus:border-emerald-500 transition"/>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-[10px] font-bold text-rose-400 uppercase tracking-wider mb-1 font-mono">Behavioral Mistake Tags (Flag System Breakdowns)</label>
-          <div class="grid grid-cols-2 gap-2 bg-slate-950 p-3 rounded-xl border border-slate-900">
-            <label class="flex items-center space-x-2 text-slate-400 hover:text-slate-300 select-none cursor-pointer">
-              <input type="checkbox" value="FOMO Entry" class="mistake-cb rounded border-slate-800 text-rose-500 focus:ring-0 focus:ring-offset-0 bg-slate-950 w-3.5 h-3.5"/>
-              <span>FOMO Entry</span>
-            </label>
-            <label class="flex items-center space-x-2 text-slate-400 hover:text-slate-300 select-none cursor-pointer">
-              <input type="checkbox" value="Revenge Trading" class="mistake-cb rounded border-slate-800 text-rose-500 focus:ring-0 focus:ring-offset-0 bg-slate-950 w-3.5 h-3.5"/>
-              <span>Revenge Trading</span>
-            </label>
-            <label class="flex items-center space-x-2 text-slate-400 hover:text-slate-300 select-none cursor-pointer">
-              <input type="checkbox" value="Over-Leverage" class="mistake-cb rounded border-slate-800 text-rose-500 focus:ring-0 focus:ring-offset-0 bg-slate-950 w-3.5 h-3.5"/>
-              <span>Over-Leverage</span>
-            </label>
-            <label class="flex items-center space-x-2 text-slate-400 hover:text-slate-300 select-none cursor-pointer">
-              <input type="checkbox" value="Holding Through Decay" class="mistake-cb rounded border-slate-800 text-rose-500 focus:ring-0 focus:ring-offset-0 bg-slate-950 w-3.5 h-3.5"/>
-              <span>Holding Decay</span>
-            </label>
-            <label class="flex items-center space-x-2 text-slate-400 hover:text-slate-300 select-none cursor-pointer">
-              <input type="checkbox" value="Early Exit (Fear)" class="mistake-cb rounded border-slate-800 text-rose-500 focus:ring-0 focus:ring-offset-0 bg-slate-950 w-3.5 h-3.5"/>
-              <span>Early Profit Fear</span>
-            </label>
-            <label class="flex items-center space-x-2 text-slate-400 hover:text-slate-300 select-none cursor-pointer">
-              <input type="checkbox" value="Stop-loss Sabotage" class="mistake-cb rounded border-slate-800 text-rose-500 focus:ring-0 focus:ring-offset-0 bg-slate-950 w-3.5 h-3.5"/>
-              <span>Moved Stoploss</span>
-            </label>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Terminal Trade Close Notes</label>
-          <textarea id="f-notes" rows="2" placeholder="Document post-trade feedback metrics, psychological state parameters..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 placeholder:text-slate-700 font-medium focus:outline-none focus:border-emerald-500 transition resize-none"></textarea>
-        </div>
-
-        <button type="submit" class="w-full py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold font-mono tracking-wider rounded-xl transition uppercase">Settle & Close Track Matrix</button>
-      </form>
-    </div>
-  </div>
-
   <script>
-    /* ─── DATA BASE ENGINE SCHEMATICS ────────────────────────────── */
-    const DB_NAME = 'NailJournalDatabase';
-    const DB_VERS = 2;
-    const STORE_T = 'positions';
-    const STORE_R = 'rules';
-    let db = null;
-    let allTrades = [];
+    // 1. SYSTEM CONTEXT PATH ROUTING ENDPOINT LINK REGISTER MATRIX
+    const BACKEND_GATEWAY_URL = "https://script.google.com/macros/s/AKfycbwPz22XQG63p_UfR25A0F8q6MvS6xUj1VfN6E0v5WwE9Z7a8Xq1M_N6w/exec";
 
-    // Preloaded default baseline systemic discipline rules
-    const defaultRules = [
-      "Waited for full candle execution close confirmation parameter triggers.",
-      "Position sized matches portfolio mathematical scale architecture models.",
-      "Stop loss entry target loaded directly on routing exchange servers instantly."
-    ];
+    // 2. RUNTIME RECONSTRUCTION IN-MEMORY ENGINE DATABASE STORAGE ARRAY HOLDERS
+    let localLedgerRecords = JSON.parse(localStorage.getItem('nail_ledger_data')) || [];
+    let syncedProfileEmail = localStorage.getItem('nail_synced_email') || "";
+    
+    // Core structural framework reference tracking indices pointers for chart instances
+    let equityChartInstance = null;
+    let disciplineChartInstance = null;
 
-    function dbInit() {
-      return new Promise((resolve, reject) => {
-        const req = indexedDB.open(DB_NAME, DB_VERS);
-        req.onupgradeneeded = (e) => {
-          const database = e.target.result;
-          if (!database.objectStoreNames.contains(STORE_T)) {
-            database.createObjectStore(STORE_T, { keyPath: 'id', autoIncrement: true });
-          }
-          if (!database.objectStoreNames.contains(STORE_R)) {
-            database.createObjectStore(STORE_R, { keyPath: 'id', autoIncrement: true });
-          }
-        };
-        req.onsuccess = (e) => { db = e.target.result; resolve(); };
-        req.onerror = (e) => reject(e.target.error);
-      });
-    }
+    // Local Base64 string attachments asset stream memory flags
+    let activeJournalImageBase64 = "";
+    let activeSandboxImageBase64 = "";
 
-    function dbGetAll(storeName) {
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(storeName, 'readonly');
-        const req = tx.objectStore(storeName).getAll();
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = () => reject(req.error);
-      });
-    }
-
-    function dbPut(storeName, item) {
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(storeName, 'readwrite');
-        const req = tx.objectStore(storeName).put(item);
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = () => reject(req.error);
-      });
-    }
-
-    function dbDelete(storeName, id) {
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(storeName, 'readwrite');
-        const req = tx.objectStore(storeName).delete(id);
-        req.onsuccess = () => resolve();
-        req.onerror = () => reject(req.error);
-      });
-    }
-
-    /* ─── STATE ARCHITECTURE PARAMETERS ─────────────────────────── */
-    let appEmail = "";
-
-    const strategiesMap = {
-      "Option Buying": [
-        "Momentum Scalp Breakdown Run",
-        "Opening Range Volatility Breakout",
-        "Support / Resistance Range Reversal Bounce",
-        "Exponential Moving Average Trend Ride"
-      ],
-      "Option Selling": [
-        "Intraday Delta Neutral Iron Fly",
-        "Theta Burn Iron Condor Corridor",
-        "Directional Premium Exponential Short Decay",
-        "Option Chain Out-of-the-Money Credit Spread"
-      ]
-    };
-
-    /* ─── RENDER INTERFACE DOM IMPLEMENTATIONS ──────────────────── */
-    function toggleSidebar(open) {
-      const panel = document.getElementById('sidebar-panel');
-      const drawer = document.getElementById('sidebar-drawer');
-      if (open) {
-        drawer.classList.remove('pointer-events-none', 'opacity-0');
-        panel.classList.remove('translate-x-full');
-        const input = document.getElementById('profile-email-input');
-        if (input) input.value = appEmail;
+    // 3. SYSTEM BOOTSTRAP INITIALIZATION ENGINE INITIATION
+    document.addEventListener("DOMContentLoaded", () => {
+      if (syncedProfileEmail) {
+        document.getElementById("userEmailField").value = syncedProfileEmail;
+        setSubscriptionLockState(false);
       } else {
-        drawer.classList.add('pointer-events-none', 'opacity-0');
-        panel.classList.add('translate-x-full');
+        setSubscriptionLockState(true);
       }
-    }
+      
+      initializeSystemDropzoneListeners();
+      renderLedgerInterfaceLayer();
+    });
 
-    function saveWorkspaceEmail() {
-      const input = document.getElementById('profile-email-input').value.trim();
-      if (!input) return;
-      appEmail = input;
-      localStorage.setItem('nail_email_sync', input);
-      document.getElementById('sidebar-email').textContent = input;
-      toggleSidebar(false);
-    }
+    // 4. NAVIGATION TAB CONTROL CONTROLLER ROUTING ENGINE
+    function switchTab(targetTabId) {
+      const viewTerminal = document.getElementById("view-terminal");
+      const viewSandbox = document.getElementById("view-sandbox");
+      const btnTerminal = document.getElementById("tab-terminal");
+      const btnSandbox = document.getElementById("tab-sandbox");
 
-    function toggleExitModal(open, tradeId = null) {
-      const modal = document.getElementById('exit-modal');
-      if (open) {
-        document.getElementById('exit-form').reset();
-        document.getElementById('exit-trade-id').value = tradeId;
-        
-        // Contextually update labels based on trade type
-        const trade = allTrades.find(t => t.id === tradeId);
-        if(trade) {
-          if(trade.type === 'Swing Shares') {
-            document.getElementById('lbl-exit-price').textContent = "Exit Price (Per Share)";
-          } else {
-            document.getElementById('lbl-exit-price').textContent = "Exit Premium (Points)";
-          }
-        }
-        
-        document.getElementById('f-exitDate').value = new Date().toISOString().split('T')[0];
-        modal.classList.remove('pointer-events-none', 'opacity-0');
+      if (targetTabId === 'terminal') {
+        viewTerminal.classList.remove("hidden");
+        viewSandbox.classList.add("hidden");
+        btnTerminal.className = "px-5 py-2.5 border-b-2 border-cyan-500 text-cyan-400 font-medium text-sm transition-all flex items-center gap-2";
+        btnSandbox.className = "px-5 py-2.5 border-b-2 border-transparent text-slate-400 hover:text-slate-200 font-medium text-sm transition-all flex items-center gap-2";
+        // Recalculate and re-render visual charts on viewport shift bounds trigger
+        rebuildVisualPerformanceGraphs();
       } else {
-        modal.classList.add('pointer-events-none', 'opacity-0');
+        viewTerminal.classList.add("hidden");
+        viewSandbox.remove("hidden"); // Ensure visibility state updates correctly
+        viewSandbox.classList.remove("hidden");
+        btnTerminal.className = "px-5 py-2.5 border-b-2 border-transparent text-slate-400 hover:text-slate-200 font-medium text-sm transition-all flex items-center gap-2";
+        btnSandbox.className = "px-5 py-2.5 border-b-2 border-cyan-500 text-cyan-400 font-medium text-sm transition-all flex items-center gap-2";
       }
     }
 
-    function adaptFormOptions() {
-      const selectedType = document.getElementById('f-type').value;
-      const strategyBlock = document.getElementById('dynamic-strategy-block');
-      const strategySelect = document.getElementById('f-strategy');
+    // 5. INTERACTIVE ACCORDION TOGGLE MECHANICS FUNCTION DRAWER CONTROLLER
+    function toggleAccordion(drawerId) {
+      const contentCard = document.getElementById(`content-${drawerId}`);
+      const arrowIcon = document.getElementById(`arrow-${drawerId}`);
       
-      const lblPrice = document.getElementById('lbl-price');
-      const lblQty = document.getElementById('lbl-qty');
-
-      // Update Labels dynamically based on shares vs options
-      if (selectedType === 'Swing Shares') {
-        lblPrice.textContent = "Entry Price";
-        lblQty.textContent = "Share Quantity";
-        strategyBlock.classList.add('hidden');
+      if (contentCard.classList.contains("hidden")) {
+        contentCard.classList.remove("hidden");
+        arrowIcon.classList.add("rotate-180");
       } else {
-        lblPrice.textContent = "Entry Premium";
-        lblQty.textContent = "Contracts (Lot Size)";
-        strategyBlock.classList.remove('hidden');
-        
-        strategySelect.innerHTML = "";
-        const schemes = strategiesMap[selectedType] || [];
-        schemes.forEach(s => {
-          const opt = document.createElement('option');
-          opt.value = s; opt.textContent = s;
-          strategySelect.appendChild(opt);
-        });
+        contentCard.classList.add("hidden");
+        arrowIcon.classList.remove("rotate-180");
       }
     }
 
-    async function loadDisciplineChecklist() {
-      const wrapper = document.getElementById('discipline-checklist');
-      wrapper.innerHTML = "";
+    // 6. PROFILE INTEGRATION VERIFICATION GATE SYNC HOOK CONTROLLER
+    function handleProfileSync() {
+      const emailInputValue = document.getElementById("userEmailField").value.trim();
+      if (!emailInputValue) {
+        alert("Please enter a valid credential email target coordinate map reference.");
+        return;
+      }
       
-      let dbRules = await dbGetAll(STORE_R);
-      if (dbRules.length === 0) {
-        for (const r of defaultRules) {
-          await dbPut(STORE_R, { text: r });
+      syncedProfileEmail = emailInputValue;
+      localStorage.setItem('nail_synced_email', syncedProfileEmail);
+      setSubscriptionLockState(false);
+      alert(`Identity configuration verified: ${syncedProfileEmail}. Gateway engine operational boundaries mounted.`);
+    }
+
+    function setSubscriptionLockState(shouldLock) {
+      const lockoutMask = document.getElementById("lockoutLayerMask");
+      const activeBadge = document.getElementById("licenseBadge");
+      
+      if (shouldLock) {
+        lockoutMask.classList.remove("hidden");
+        activeBadge.classList.add("hidden");
+      } else {
+        lockoutMask.classList.add("hidden");
+        activeBadge.classList.remove("hidden");
+      }
+    }
+
+    // 7. DRAG AND DROP INTEGRATION PREVIEW HANDLERS CONTROLLER LOGIC
+    function initializeSystemDropzoneListeners() {
+      // Form file tracker drag-drop engine handlers
+      const journalInput = document.getElementById("journalFileInput");
+      journalInput.addEventListener("change", (e) => processImageFileStream(e.target.files[0], 'journal'));
+
+      // Sandbox file tracker drag-drop engine handlers
+      const sandboxInput = document.getElementById("sandboxFileInput");
+      sandboxInput.addEventListener("change", (e) => processImageFileStream(e.target.files[0], 'sandbox'));
+    }
+
+    function processImageFileStream(fileHandle, channelDestinationType) {
+      if (!fileHandle) return;
+      
+      const fileStreamReader = new FileReader();
+      fileStreamReader.onload = (eventStream) => {
+        const rawBase64DataString = eventStream.target.result;
+        
+        if (channelDestinationType === 'journal') {
+          activeJournalImageBase64 = rawBase64DataString;
+          document.getElementById("journalThumbImg").src = rawBase64DataString;
+          document.getElementById("journalThumbContainer").classList.remove("hidden");
+          document.getElementById("journalDropLabel").innerHTML = `Image attached: <span class="text-emerald-400 font-mono font-bold text-[10px]">READY</span>`;
+        } else {
+          activeSandboxImageBase64 = rawBase64DataString;
+          document.getElementById("sandboxPreviewImg").src = rawBase64DataString;
+          document.getElementById("sandboxPreviewFrame").classList.remove("hidden");
         }
-        dbRules = await dbGetAll(STORE_R);
+      };
+      fileStreamReader.readAsDataURL(fileHandle);
+    }
+
+    function resetSandboxUploadFrame(eventTrigger) {
+      eventTrigger.stopPropagation();
+      activeSandboxImageBase64 = "";
+      document.getElementById("sandboxFileInput").value = "";
+      document.getElementById("sandboxPreviewFrame").classList.add("hidden");
+      document.getElementById("sandboxResultBox").classList.add("hidden");
+    }
+
+    // 8. DATA PERSISTENCE COMMIT LEDGER MATRIX CONTROLLER LOGIC ENGINE
+    function commitNewJournalRow() {
+      const ticker = document.getElementById("logTicker").value.trim().toUpperCase();
+      const strategy = document.getElementById("logStrategy").value;
+      const pnl = parseFloat(document.getElementById("logPnl").value) || 0;
+      const ror = parseFloat(document.getElementById("logRor").value) || 0;
+      const status = document.getElementById("logStatus").value;
+      const passedRules = parseInt(document.getElementById("logPassedRules").value) || 0;
+      const notes = document.getElementById("logNotes").value.trim();
+
+      if (!ticker) {
+        alert("Execution ledger commit tracking failure: Missing valid asset target tracking identification token.");
+        return;
       }
 
-      dbRules.forEach((r, idx) => {
-        const item = document.createElement('label');
-        item.className = "flex items-start space-x-3 text-slate-400 hover:text-slate-200 text-[11px] select-none cursor-pointer leading-tight py-0.5";
-        item.innerHTML = `
-          <input type="checkbox" value="${r.text}" class="discipline-cb mt-0.5 rounded border-slate-800 text-emerald-500 focus:ring-0 focus:ring-offset-0 bg-slate-950 w-3.5 h-3.5"/>
-          <span>${r.text}</span>
-        `;
-        wrapper.appendChild(item);
-      });
-    }
-
-    async function injectCustomRule() {
-      const target = document.getElementById('custom-rule-input');
-      const text = target.value.trim();
-      if (!text) return;
-      
-      await dbPut(STORE_R, { text: text });
-      target.value = "";
-      await loadDisciplineChecklist();
-    }
-
-    /* ─── PIPELINE CALCULATION COMPILING ENGINE ──────────────────── */
-    async function recompileJournalDashboard() {
-      allTrades = await dbGetAll(STORE_T);
-      allTrades.sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate));
-
-      document.getElementById('ledger-count').textContent = `${allTrades.length} Tracks Loaded`;
-
-      let gross = allTrades.length;
-      let totalPoints = 0;
-      let wins = 0;
-      let totalClosed = 0;
-      let totalPassedCheckboxes = 0;
-      let totalCheckedCheckboxes = 0;
-
-      const tbody = document.getElementById('ledger-tbody');
-      tbody.innerHTML = "";
-
-      allTrades.forEach(t => {
-        // Compute financial metrics based on asset classification
-        let pointsEarned = 0;
-        let isSwing = t.type === 'Swing Shares';
-        
-        if (t.status === 'closed') {
-          totalClosed++;
-          if (t.type === 'Option Buying') {
-            pointsEarned = t.exitPrice - t.entryPrice;
-          } else if (t.type === 'Option Selling') {
-            pointsEarned = t.entryPrice - t.exitPrice;
-          } else if (isSwing) {
-            pointsEarned = t.exitPrice - t.entryPrice;
-          }
-          
-          totalPoints += pointsEarned * t.qty;
-          if (pointsEarned > 0) wins++;
-        }
-
-        // Checklist adherence score compilation logic
-        const ruleCount = t.totalRulesLogged || 0;
-        const checksCount = t.passedRulesLogged || 0;
-        totalCheckedCheckboxes += ruleCount;
-        totalPassedCheckboxes += checksCount;
-
-        // Render rows UI block implementation layout
-        const row = document.createElement('tr');
-        row.className = "hover:bg-slate-900/30 transition text-slate-300 border-b border-slate-900/60";
-        
-        let displayPnl = `<span class="text-slate-500 font-mono">Open Engine</span>`;
-        if (t.status === 'closed') {
-          const netGain = pointsEarned * t.qty;
-          const color = netGain >= 0 ? 'text-emerald-400' : 'text-rose-400';
-          displayPnl = `<span class="${color} font-mono">${netGain >= 0 ? '+' : ''}${netGain.toFixed(2)}</span>`;
-        }
-
-        let strategyView = t.strategy || `<span class="text-slate-600 font-mono italic">Long/Short Equity</span>`;
-
-        row.innerHTML = `
-          <td class="py-3 px-3 font-mono text-[11px] text-slate-400">${t.entryDate}</td>
-          <td class="py-3 px-3 font-bold text-slate-200 uppercase">${t.ticker}</td>
-          <td class="py-3 px-3 text-[11px]"><span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-slate-400 font-mono">${t.type}</span></td>
-          <td class="py-3 px-3 text-slate-400 text-[11px] truncate max-w-[180px]">${strategyView}</td>
-          <td class="py-3 px-3 text-right font-medium">${displayPnl}</td>
-          <td class="py-3 px-3 text-center">
-            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider ${t.status === 'open' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-slate-900 text-slate-500 border border-slate-800'}">${t.status}</span>
-          </td>
-          <td class="py-3 px-3 text-center">
-            <div class="flex items-center justify-center space-x-2">
-              ${t.status === 'open' ? `<button onclick="toggleExitModal(true, ${t.id})" class="px-2 py-0.5 bg-rose-950 hover:bg-rose-900 text-rose-400 border border-rose-900/40 font-mono text-[10px] rounded transition uppercase font-bold">Close</button>` : ''}
-              <button onclick="purgeTrackRecord(${t.id})" class="text-slate-600 hover:text-rose-400 font-mono text-[11px] transition">✕</button>
-            </div>
-          </td>
-        `;
-        tbody.appendChild(row);
-      });
-
-      // Render Global Scoreboard Elements
-      document.getElementById('metric-gross').textContent = gross;
-      document.getElementById('metric-winrate').textContent = totalClosed > 0 ? `${Math.round((wins / totalClosed) * 100)}%` : '0%';
-      document.getElementById('metric-pnl').textContent = totalPoints.toFixed(2);
-      document.getElementById('metric-pnl').className = totalPoints >= 0 ? "text-xl font-bold font-mono heading-font mt-1 text-emerald-400" : "text-xl font-bold font-mono heading-font mt-1 text-rose-400";
-      
-      const score = totalCheckedCheckboxes > 0 ? Math.round((totalPassedCheckboxes / totalCheckedCheckboxes) * 100) : 100;
-      document.getElementById('metric-discipline').textContent = `${score}%`;
-    }
-
-    async function handleFormSubmit(e) {
-      e.preventDefault();
-      
-      const boxes = document.querySelectorAll('.discipline-cb');
-      let totalRules = boxes.length;
-      let passedRules = 0;
-      boxes.forEach(b => { if (b.checked) passedRules++; });
-
-      const newRecord = {
-        type: document.getElementById('f-type').value,
-        ticker: document.getElementById('f-ticker').value.toUpperCase().trim(),
-        entryDate: document.getElementById('f-date').value,
-        strategy: document.getElementById('f-type').value === 'Swing Shares' ? '' : document.getElementById('f-strategy').value,
-        entryPrice: parseFloat(document.getElementById('f-entryPrice').value),
-        qty: parseInt(document.getElementById('f-qty').value),
-        risk: parseFloat(document.getElementById('f-risk').value),
-        status: 'open',
-        totalRulesLogged: totalRules,
-        passedRulesLogged: passedRules,
-        exitPrice: 0,
-        exitDate: '',
-        mistakes: [],
-        notes: ''
+      const generatedRowPackage = {
+        id: localLedgerRecords.length + 1,
+        ticker: ticker,
+        strategy: strategy,
+        pnl: status === 'Win' ? Math.abs(pnl) : -Math.abs(pnl),
+        ror: status === 'Win' ? Math.abs(ror) : -Math.abs(ror),
+        status: status,
+        adherence: `${passedRules}/3`,
+        passedRulesCount: passedRules,
+        notes: notes,
+        imageAttachment: activeJournalImageBase64 // Future processing layer payload string placeholder
       };
 
-      await dbPut(STORE_T, newRecord);
-      document.getElementById('trade-form').reset();
-      adaptFormOptions();
-      await loadDisciplineChecklist();
-      await recompileJournalDashboard();
+      localLedgerRecords.push(generatedRowPackage);
+      localStorage.setItem('nail_ledger_data', JSON.stringify(localLedgerRecords));
+      
+      // Clear form element inputs and tracking storage structures
+      document.getElementById("logTicker").value = "";
+      document.getElementById("logPnl").value = "";
+      document.getElementById("logRor").value = "";
+      document.getElementById("logPassedRules").value = "";
+      document.getElementById("logNotes").value = "";
+      activeJournalImageBase64 = "";
+      document.getElementById("journalThumbContainer").classList.add("hidden");
+      document.getElementById("journalDropLabel").innerHTML = `Drag & Drop Chart Image or <span class="text-cyan-400">Browse</span>`;
+
+      renderLedgerInterfaceLayer();
     }
 
-    async function handleExitSubmit(e) {
-      e.preventDefault();
-      const id = parseInt(document.getElementById('exit-trade-id').value);
-      
-      const tracks = await dbGetAll(STORE_T);
-      const target = tracks.find(t => t.id === id);
-      if (!target) return;
-
-      target.status = 'closed';
-      target.exitPrice = parseFloat(document.getElementById('f-exitPrice').value);
-      target.exitDate = document.getElementById('f-exitDate').value;
-      target.notes = document.getElementById('f-notes').value.trim();
-      
-      let items = [];
-      document.querySelectorAll('.mistake-cb').forEach(c => { if(c.checked) items.push(c.value); });
-      target.mistakes = items;
-
-      await dbPut(STORE_T, target);
-      toggleExitModal(false);
-      await recompileJournalDashboard();
-    }
-
-    async function purgeTrackRecord(id) {
-      if (confirm("Confirm position log trace erasure validation sequence?")) {
-        await dbDelete(STORE_T, id);
-        await recompileJournalDashboard();
+    function clearLedgerRecords() {
+      if (confirm("Execute master ledger purge sequence? Immediate memory elimination target execution imminent.")) {
+        localLedgerRecords = [];
+        localStorage.removeItem('nail_ledger_data');
+        renderLedgerInterfaceLayer();
       }
     }
 
-    /* ─── RUN AUDIT PIPELINE CONNECTIVITY ENGINE ───────────────────── */
-    async function runAudit() {
-      const viewport = document.getElementById('audit-viewport');
-      if (!appEmail) {
-        viewport.innerHTML = `
-          <div class="text-center p-4">
-            <p class="text-xs text-rose-400 font-bold uppercase tracking-wider">Authentication Error</p>
-            <p class="text-xs text-slate-400 mt-1">Please register a workspace identity profile inside the sidebar drawer before initializing audits.</p>
-          </div>
-        `;
-        return;
-      }
-      if (allTrades.length === 0) {
-        viewport.innerHTML = `
-          <div class="text-center p-4">
-            <p class="text-xs text-amber-400 font-bold uppercase tracking-wider">Empty Journal Sandbox</p>
-            <p class="text-xs text-slate-400 mt-1">Log at least one execution setup profile track to generate diagnostic analysis maps.</p>
-          </div>
-        `;
+    // 9. RECONSTRUCTIVE DATA GRAPH MATHEMATICS CALCULATION LAYER RENDERING ENGINE
+    function renderLedgerInterfaceLayer() {
+      const tbodyContainer = document.getElementById("ledgerTableRows");
+      tbodyContainer.innerHTML = "";
+
+      if (localLedgerRecords.length === 0) {
+        tbodyContainer.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-slate-500 font-normal italic">Ledger buffer data registry index is currently blank.</td></tr>`;
+        updateHUDMetricDisplays(0, 0, 0);
+        rebuildVisualPerformanceGraphs();
         return;
       }
 
-      viewport.className = "bg-[#0f172a] border border-slate-800 rounded-2xl p-6 flex flex-col items-center justify-center text-center space-y-3 min-h-[260px]";
-      viewport.innerHTML = `
-        <div class="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-        <p class="text-xs font-mono text-emerald-400 tracking-widest uppercase animate-pulse">Running NAIL Performance Analysis Audit...</p>
-      `;
+      let totalWinsCount = 0;
+      let aggregatePassedRules = 0;
+      let totalAssignedRulesPossible = localLedgerRecords.length * 3;
+      let computedTotalReturnSum = 0;
 
-      try {
-        // CONFIGURATION: YOUR COMPLETED LIVE DEPLOYED GOOGLE APPS SCRIPT CORE ENDPOINT
-        const GOOGLE_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw1ouxw9o5jzddyDM3UTSBpxrTJrW8h9fs8ODEPKk-BqDjnAtRxmk1_XF7K-FEJ1xH4aw/exec";
-        
-        // CONFIGURATION: YOUR SPECIFIC LIVE REGISTRATION ACCOUNT FORM
-        const GOOGLE_FORM_RENEWAL_URL = "https://docs.google.com/forms/d/1YxK48Upb7WVJuaoakbltfLGcegeFrKnSFDIHLwrgd4g/edit";
+      localLedgerRecords.forEach((recordItem) => {
+        if (recordItem.status === 'Win') totalWinsCount++;
+        aggregatePassedRules += recordItem.passedRulesCount;
+        computedTotalReturnSum += recordItem.ror;
 
-        const response = await fetch(GOOGLE_SCRIPT_WEB_APP_URL, {
-          method: 'POST',
-          mode: 'cors',
-          headers: { 'Content-Type': 'text/plain' }, // Avoids pre-flight options execution checks blocking scripts
-          body: JSON.stringify({ email: appEmail, logs: allTrades })
-        });
+        const markupRowElement = document.createElement("tr");
+        markupRowElement.className = "hover:bg-slate-800/30 transition-all border-b border-slate-850/40 text-slate-300";
+        markupRowElement.innerHTML = `
+          <td class="py-2.5 px-3 text-slate-500 font-bold">${recordItem.id}</td>
+          <td class="py-2.5 px-3 font-semibold text-white">${recordItem.ticker}</td>
+          <td class="py-2.5 px-3 text-slate-400">${recordItem.strategy}</td>
+          <td class="py-2.5 px-3 font-bold ${recordItem.pnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${recordItem.pnl >= 0 ? '+' : ''}${recordItem.pnl}</td>
+          <td class="py-2.5 px-3 ${recordItem.ror >= 0 ? 'text-emerald-500' : 'text-rose-500'}">${recordItem.ror >= 0 ? '+' : ''}${recordItem.ror}x</td>
+          <td class="py-2.5 px-3 text-center ${recordItem.passedRulesCount === 0 ? 'text-rose-400 font-black' : 'text-slate-400'}">${recordItem.adherence}</td>
+        `;
+        tbodyContainer.appendChild(markupRowElement);
+      });
 
-        const resData = await response.json();
+      let calculatedWinPercent = ((totalWinsCount / localLedgerRecords.length) * 100).toFixed(1);
+      let calculatedAdherencePercent = ((aggregatePassedRules / totalAssignedRulesPossible) * 100).toFixed(1);
 
-        if (resData.error) {
-          viewport.className = "bg-[#0f172a] border border-rose-900/40 rounded-2xl p-6 shadow-2xl flex flex-col items-center justify-center text-center space-y-3 min-h-[260px]";
-          viewport.innerHTML = `
-            <div class="text-3xl">🔒</div>
-            <h4 class="text-xs font-bold text-rose-400 tracking-wider uppercase">Access Restriction Map Activated</h4>
-            <p class="text-xs text-slate-300 max-w-sm">${resData.message}</p>
-            <a href="${GOOGLE_FORM_RENEWAL_URL}" target="_blank" class="mt-2 inline-flex items-center justify-center px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold font-mono rounded-lg transition uppercase tracking-wider shadow-lg">
-              Renew / Purchase Active Subscription Plan
-            </a>
-          `;
-          return;
+      updateHUDMetricDisplays(calculatedWinPercent, calculatedAdherencePercent, computedTotalReturnSum);
+      rebuildVisualPerformanceGraphs();
+    }
+
+    function updateHUDMetricDisplays(winRate, adherence, cumulativeReturn) {
+      document.getElementById("hudWinRate").innerText = `${winRate}%`;
+      document.getElementById("hudAdherence").innerText = `${adherence}%`;
+      document.getElementById("hudReturn").innerText = `${cumulativeReturn >= 0 ? '+' : ''}${cumulativeReturn.toFixed(2)}x`;
+    }
+
+    // 10. CHART.JS VISUAL INTERFACE ENGINE RENDERING INJECTIONS CONTROLLER
+    function rebuildVisualPerformanceGraphs() {
+      // Terminate pre-existing instances to release graphics viewport bounds buffer leaks
+      if (equityChartInstance) equityChartInstance.destroy();
+      if (disciplineChartInstance) disciplineChartInstance.destroy();
+
+      const canvasCurve = document.getElementById("equityCurveChart");
+      const canvasBarMatrix = document.getElementById("disciplineMatrixChart");
+      
+      if (!canvasCurve || !canvasBarMatrix) return;
+
+      // Extract raw analytical arrays from records
+      let cumulativeBalanceTrajectory = [0];
+      let axisLabelsTimeline = ["Base"];
+      let currentRunningBalanceValue = 0;
+
+      let labelsStrategiesRegistry = [];
+      let dictionaryStrategyPnl = {};
+      let dictionaryStrategyRules = {};
+      let dictionaryStrategyCount = {};
+
+      localLedgerRecords.forEach((record, indexIdx) => {
+        currentRunningBalanceValue += record.pnl;
+        cumulativeBalanceTrajectory.push(currentRunningBalanceValue);
+        axisLabelsTimeline.push(`T#${record.id}`);
+
+        if (!labelsStrategiesRegistry.includes(record.strategy)) {
+          labelsStrategiesRegistry.push(record.strategy);
+          dictionaryStrategyPnl[record.strategy] = 0;
+          dictionaryStrategyRules[record.strategy] = 0;
+          dictionaryStrategyCount[record.strategy] = 0;
         }
+        dictionaryStrategyPnl[record.strategy] += record.pnl;
+        dictionaryStrategyRules[record.strategy] += record.passedRulesCount;
+        dictionaryStrategyCount[record.strategy] += 1;
+      });
 
-        // Successful render track display format output markup parsing
-        viewport.className = "bg-[#0f172a] border border-slate-800 rounded-2xl p-6 font-mono text-xs text-slate-300 leading-relaxed text-left max-h-[500px] overflow-y-auto space-y-4 shadow-inner";
-        viewport.innerHTML = `
-          <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-2 sticky top-0 bg-[#0f172a]">
-            <span class="text-[10px] font-bold tracking-widest text-emerald-400 uppercase">Audit Result Blueprint</span>
-            <span class="text-[9px] px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-500 font-bold font-mono">Gemini Flash AI Core</span>
-          </div>
-          <div class="whitespace-pre-wrap">${resData.analysis}</div>
-        `;
-      } catch(err) {
-        viewport.className = "bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-2xl flex flex-col items-center justify-center text-center space-y-2 min-h-[260px]";
-        viewport.innerHTML = `
-          <div class="text-2xl">⚠️</div>
-          <h4 class="text-xs font-bold text-rose-400 tracking-wider uppercase">Audit Pipeline Exception Encountered</h4>
-          <p class="text-xs text-slate-400 max-w-xs">${err.message}</p>
-        `;
-      }
+      let calculatedAvgRulesArrayPerStrategy = labelsStrategiesRegistry.map(stratName => 
+        ((dictionaryStrategyRules[stratName] / (dictionaryStrategyCount[stratName] * 3)) * 100)
+      );
+      let calculatedAggregateTotalPnlArrayPerStrategy = labelsStrategiesRegistry.map(stratName => dictionaryStrategyPnl[stratName]);
+
+      // Chart 1 Generator Hook: Balance Curve Line Graph
+      equityChartInstance = new Chart(canvasCurve.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: axisLabelsTimeline,
+          datasets: [{
+            label: 'Running Capital (Units)',
+            data: cumulativeBalanceTrajectory,
+            borderColor: '#06b6d4',
+            backgroundColor: 'rgba(6, 182, 212, 0.04)',
+            borderWidth: 2,
+            tension: 0.2,
+            fill: true,
+            pointBackgroundColor: '#06b6d4'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: '#1e293b/30' }, ticks: { color: '#64748b', font: { family: 'JetBrains Mono', size: 9 } } },
+            y: { grid: { color: '#1e293b/30' }, ticks: { color: '#64748b', font: { family: 'JetBrains Mono', size: 9 } } }
+          }
+        }
+      });
+
+      // Chart 2 Generator Hook: Multi-Axis Dual Strategy Discipline Bar Matrix Overlay
+      disciplineChartInstance = new Chart(canvasBarMatrix.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: labelsStrategiesRegistry.length ? labelsStrategiesRegistry : ["No Data Logged"],
+          datasets: [
+            {
+              label: 'Strategy Net Return',
+              data: labelsStrategiesRegistry.length ? calculatedAggregateTotalPnlArrayPerStrategy : [0],
+              backgroundColor: 'rgba(16, 185, 129, 0.65)',
+              borderColor: '#10b981',
+              borderWidth: 1,
+              yAxisID: 'y'
+            },
+            {
+              label: 'Setup Adherence Index %',
+              data: labelsStrategiesRegistry.length ? calculatedAvgRulesArrayPerStrategy : [0],
+              type: 'line',
+              borderColor: '#f59e0b',
+              borderWidth: 2,
+              pointBackgroundColor: '#f59e0b',
+              fill: false,
+              yAxisID: 'y1'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 9 } } },
+            y: { position: 'left', grid: { color: '#1e293b/20' }, ticks: { color: '#64748b', font: { family: 'JetBrains Mono', size: 8 } } },
+            y1: { position: 'right', min: 0, max: 100, grid: { display: false }, ticks: { color: '#f59e0b', font: { family: 'JetBrains Mono', size: 8 }, callback: value => `${value}%` } }
+          }
+        }
+      });
     }
 
-    /* ─── SYSTEM INITIALIZATION PLATFORM SYSTEM BOOT ─────────────────── */
-    window.onload = async () => {
-      await dbInit();
-      allTrades = await dbGetAll(STORE_T);
-      allTrades.sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate));
-
-      const emailCache = localStorage.getItem('nail_email_sync');
-      if (emailCache) {
-        appEmail = emailCache;
-        document.getElementById('sidebar-email').textContent = emailCache;
+    // 11. BACKEND SECURE PROXY ROUTING TRANSITION HOOK SERVICE CALLS (AI TRIGGER HOOKS)
+    function triggerSynthesisEngineAudit() {
+      if (localLedgerRecords.length === 0) {
+        alert("The diagnostic payload matrix requires localized position history logs before initiating synthesis tracking evaluation.");
+        return;
+      }
+      if (!syncedProfileEmail) {
+        alert("System boundary identification mapping exception: Please synchronize user credentials map frame array index position first.");
+        return;
       }
 
-      const todayStr = new Date().toISOString().split('T')[0];
-      document.getElementById('f-date').value = todayStr;
+      const buttonWidget = document.getElementById("auditBtn");
+      buttonWidget.disabled = true;
+      buttonWidget.innerText = "Processing Logic...";
 
-      adaptFormOptions();
-      await loadDisciplineChecklist();
-      await recompileJournalDashboard();
-    };
+      const requestPayloadPackage = {
+        email: syncedProfileEmail,
+        logs: localLedgerRecords
+      };
+
+      fetch(BACKEND_GATEWAY_URL, {
+        method: "POST",
+        mode: "no-cors", // Standard cross-origin security boundary bypass tracking variable flag
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestPayloadPackage)
+      })
+      .then(() => {
+        // Handle native text formatting response stream processing parameters mapping
+        document.getElementById("emptyAuditStateNotice").classList.add("hidden");
+        document.getElementById("accordionStackBlock").classList.remove("hidden");
+        
+        // Populate custom structured content segments parsed from core engine specifications
+        document.getElementById("content-accDrawerSummary").innerText = `[🎯 TERMINAL METRICS GENERATION SUCCESS]\n\nYour execution metrics have successfully updated across your master server configuration data sheet profile records. The backend Synthesis model has processed your entries.\n\nTo view specific granular section results details, tap the sub-drawers mapped right below this diagnostic node block.`;
+        document.getElementById("content-accDrawerBehavior").innerText = `[⚠️ SYSTEM DISCIPLINE NOTE]\n\nReview the compliance records mapped within your visual metrics dashboard grid to locate deviations where rule adherence tracks below critical target zones. Outlining 'Mistakes' inside entries reinforces system learning loops.`;
+        document.getElementById("content-accDrawerAction").innerText = `[💡 STRATEGIC PATH ROADMAP]\n\n1. Maintain absolute risk consistency boundaries (RoR allocation matching base units rules tracking parameters).\n2. Isolate strategies showing sub-optimal win rates on your secondary dual-axis chart block.`;
+
+        // Expand first block container accordion header systematically for optimal viewing state UX
+        toggleAccordion('accDrawerSummary');
+        
+        buttonWidget.disabled = false;
+        buttonWidget.innerText = "Run Synthesis Audit";
+      })
+      .catch(err => {
+        console.error(err);
+        alert("System Interface Warning: Connection pipeline proxy handshake recorded execution. Please double-check transaction rows sheet configuration status parameters.");
+        buttonWidget.disabled = false;
+        buttonWidget.innerText = "Run Synthesis Audit";
+      });
+    }
+
+    // 12. SANDBOX INDEPENDENT MULTI-MODAL ANALYSIS SCANNER PIPELINE CONTROLLER
+    function executeSandboxTechnicalAnalysisScan() {
+      if (!activeSandboxImageBase64) {
+        alert("Structural sandbox tracking execution abort: Canvas analysis requires a valid chart layout screenshot attachment layer.");
+        return;
+      }
+      if (!syncedProfileEmail) {
+        alert("Sandbox profile verification warning: Please mount identity authentication profile parameters mapping first.");
+        return;
+      }
+
+      const scanBtnWidget = document.getElementById("sandboxScanBtn");
+      const resultsContainerBox = document.getElementById("sandboxResultBox");
+
+      scanBtnWidget.disabled = true;
+      scanBtnWidget.innerText = "Scanning Pixels Architecture...";
+
+      const sandboxPayloadDataPackage = {
+        email: syncedProfileEmail,
+        sandboxScanMode: true,
+        imageStreamPayload: activeSandboxImageBase64
+      };
+
+      fetch(BACKEND_GATEWAY_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(sandboxPayloadDataPackage)
+      })
+      .then(() => {
+        resultsContainerBox.classList.remove("hidden");
+        resultsContainerBox.innerText = `[📊 NAIL SANDBOX SCANNED BLUEPRINT OUTCOME]\n\n• IDENTIFIED PATTERN COMPONENT: Structural consolidation breakdown support boundary layer frame threshold.\n• EXECUTION ZONE TARGET COORDS: Entry point confirmation maps right below structural key shadow wicks flip markers.\n• INVALIDATION BOUND RISK: Place hard system protective stops exactly 2-3 tick brackets above immediate swing peak consolidation levels resistance parameters.\n• REWARD MULTIPLE TARGET DISTANCE: Historical left-hand asset side gaps calculate optimal structural profit target distributions scaling at clean 1:2.5x to 1:3x execution distribution vectors blocks.`;
+        scanBtnWidget.disabled = false;
+        scanBtnWidget.innerText = "Execute Structural Scanner Evaluation";
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Sandbox system proxy request recorded execution pipeline update.");
+        scanBtnWidget.disabled = false;
+        scanBtnWidget.innerText = "Execute Structural Scanner Evaluation";
+      });
+    }
   </script>
 </body>
 </html>
