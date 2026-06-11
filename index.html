@@ -70,7 +70,7 @@
     </div>
     <div class="bg-[#0e1726] border border-slate-800/80 rounded-2xl p-4 flex items-center justify-between glow-amber">
       <div>
-        <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Rule Adherence Index</p>
+        <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Discipline Adherence Index</p>
         <h3 id="hudAdherence" class="text-3xl font-bold text-amber-400 font-mono mt-1">0.0%</h3>
       </div>
       <div class="p-3 rounded-xl bg-amber-500/5 text-amber-400 border border-amber-500/10">
@@ -119,7 +119,7 @@
         <div class="bg-[#0e1726] border border-slate-800/80 rounded-2xl p-5">
           <div class="flex items-center justify-between mb-4">
             <h4 class="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
-              <span class="h-2 w-2 rounded-full bg-amber-400"></span> Discipline Rule Adherence vs. P&L Matrix
+              <span class="h-2 w-2 rounded-full bg-amber-400"></span> Strategy Setup Discipline vs. P&L Matrix
             </h4>
             <span class="text-xs font-mono bg-slate-800 px-2 py-0.5 rounded text-slate-400">Strategy Sync</span>
           </div>
@@ -168,14 +168,70 @@
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="text-xs font-medium text-slate-400 block mb-1">Rules Passed</label>
-              <input type="number" id="logPassedRules" placeholder="Passed (Max 3)" max="3" min="0" class="w-full bg-[#121c2e] border border-slate-700/60 rounded-xl px-3 py-2 text-sm text-white font-mono outline-none focus:border-cyan-500 transition-all">
+          <div class="bg-[#0c1220] border border-slate-800 rounded-xl p-3.5 space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-1.5">
+              <span class="text-xs font-bold text-amber-400 uppercase tracking-wide">Execution Discipline System</span>
+              <span id="rulesCountBadge" class="text-[10px] font-mono font-bold bg-slate-800 px-2 py-0.5 text-slate-300 rounded border border-slate-700">0 / 3 Followed</span>
             </div>
-            <div>
-              <label class="text-xs font-medium text-slate-400 block mb-1">Total Setup Rules</label>
-              <input type="number" id="logTotalRules" value="3" disabled class="w-full bg-[#121c2e]/50 border border-slate-800 text-slate-500 rounded-xl px-3 py-2 text-sm font-mono cursor-not-allowed">
+            
+            <div class="space-y-2">
+              <label class="flex items-start gap-2.5 text-xs text-slate-300 cursor-pointer select-none">
+                <input type="checkbox" id="ruleCore1" class="rule-checkbox mt-0.5 accent-cyan-500 rounded border-slate-700 bg-slate-800 h-3.5 w-3.5">
+                <div><span class="text-slate-500 font-bold font-mono">CORE 1 //</span> Position sizing matched system limit bounds.</div>
+              </label>
+              <label class="flex items-start gap-2.5 text-xs text-slate-300 cursor-pointer select-none">
+                <input type="checkbox" id="ruleCore2" class="rule-checkbox mt-0.5 accent-cyan-500 rounded border-slate-700 bg-slate-800 h-3.5 w-3.5">
+                <div><span class="text-slate-500 font-bold font-mono">CORE 2 //</span> Technical signal alignment matched defined rules.</div>
+              </label>
+              <label class="flex items-start gap-2.5 text-xs text-slate-300 cursor-pointer select-none">
+                <input type="checkbox" id="ruleCore3" class="rule-checkbox mt-0.5 accent-cyan-500 rounded border-slate-700 bg-slate-800 h-3.5 w-3.5">
+                <div><span class="text-slate-500 font-bold font-mono">CORE 3 //</span> Protective stop loss bracket pre-calculated and set.</div>
+              </label>
+            </div>
+
+            <div class="border-t border-slate-800/80 pt-2">
+              <button type="button" onclick="toggleAccordion('customRulesDrawer')" class="w-full text-left text-[11px] font-bold text-slate-400 hover:text-slate-200 transition-all flex items-center justify-between uppercase">
+                <span>Configure Custom Strategy Disciplines (+7 Rules)</span>
+                <svg id="arrow-customRulesDrawer" class="w-3.5 h-3.5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </button>
+              
+              <div id="content-customRulesDrawer" class="hidden mt-3 space-y-2.5 border-t border-slate-800/60 pt-2">
+                <div class="flex items-center gap-2">
+                  <input type="checkbox" id="useRuleCustom1" class="custom-toggle accent-amber-500 h-3 w-3">
+                  <input type="text" id="labelRuleCustom1" value="Waited for candle close confirmation structure" class="w-full bg-[#11192a] border border-slate-800 rounded px-2 py-1 text-[11px] font-mono text-slate-300 outline-none">
+                  <input type="checkbox" id="valRuleCustom1" class="rule-checkbox accent-amber-500 h-3.5 w-3.5">
+                </div>
+                <div class="flex items-center gap-2">
+                  <input type="checkbox" id="useRuleCustom2" class="custom-toggle accent-amber-500 h-3 w-3">
+                  <input type="text" id="labelRuleCustom2" value="Volume profile supported breakout direction metrics" class="w-full bg-[#11192a] border border-slate-800 rounded px-2 py-1 text-[11px] font-mono text-slate-300 outline-none">
+                  <input type="checkbox" id="valRuleCustom2" class="rule-checkbox accent-amber-500 h-3.5 w-3.5">
+                </div>
+                <div class="flex items-center gap-2">
+                  <input type="checkbox" id="useRuleCustom3" class="custom-toggle accent-amber-500 h-3 w-3">
+                  <input type="text" id="labelRuleCustom3" value="Avoided trading within high impact macroeconomic news zones" class="w-full bg-[#11192a] border border-slate-800 rounded px-2 py-1 text-[11px] font-mono text-slate-300 outline-none">
+                  <input type="checkbox" id="valRuleCustom3" class="rule-checkbox accent-amber-500 h-3.5 w-3.5">
+                </div>
+                <div class="flex items-center gap-2">
+                  <input type="checkbox" id="useRuleCustom4" class="custom-toggle accent-amber-500 h-3 w-3">
+                  <input type="text" id="labelRuleCustom4" value="Risk-reward ratio calculated above 1:2 minimum target" class="w-full bg-[#11192a] border border-slate-800 rounded px-2 py-1 text-[11px] font-mono text-slate-300 outline-none">
+                  <input type="checkbox" id="valRuleCustom4" class="rule-checkbox accent-amber-500 h-3.5 w-3.5">
+                </div>
+                <div class="flex items-center gap-2">
+                  <input type="checkbox" id="useRuleCustom5" class="custom-toggle accent-amber-500 h-3 w-3">
+                  <input type="text" id="labelRuleCustom5" value="No FOMO chaser entries logged beyond execution line" class="w-full bg-[#11192a] border border-slate-800 rounded px-2 py-1 text-[11px] font-mono text-slate-300 outline-none">
+                  <input type="checkbox" id="valRuleCustom5" class="rule-checkbox accent-amber-500 h-3.5 w-3.5">
+                </div>
+                <div class="flex items-center gap-2">
+                  <input type="checkbox" id="useRuleCustom6" class="custom-toggle accent-amber-500 h-3 w-3">
+                  <input type="text" id="labelRuleCustom6" value="Sub-market multi-timeframe structural trends synchronized" class="w-full bg-[#11192a] border border-slate-800 rounded px-2 py-1 text-[11px] font-mono text-slate-300 outline-none">
+                  <input type="checkbox" id="valRuleCustom6" class="rule-checkbox accent-amber-500 h-3.5 w-3.5">
+                </div>
+                <div class="flex items-center gap-2">
+                  <input type="checkbox" id="useRuleCustom7" class="custom-toggle accent-amber-500 h-3 w-3">
+                  <input type="text" id="labelRuleCustom7" value="Executed entry precisely inside planned pool liquidity zones" class="w-full bg-[#11192a] border border-slate-800 rounded px-2 py-1 text-[11px] font-mono text-slate-300 outline-none">
+                  <input type="checkbox" id="valRuleCustom7" class="rule-checkbox accent-amber-500 h-3.5 w-3.5">
+                </div>
+              </div>
             </div>
           </div>
 
@@ -185,7 +241,7 @@
           </div>
 
           <div>
-            <label class="text-xs font-medium text-slate-400 block mb-1">Attach Executed Chart Screenshot <span class="text-slate-500">(Optional Integration)</span></label>
+            <label class="text-xs font-medium text-slate-400 block mb-1">Attach Executed Chart Screenshot</label>
             <div id="journalDropZone" class="border-2 border-dashed border-slate-700 hover:border-cyan-500/60 rounded-xl p-4 transition-all text-center cursor-pointer bg-[#0c1220]/60 relative group">
               <input type="file" id="journalFileInput" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
               <div class="space-y-1">
@@ -221,7 +277,7 @@
                     <th class="py-2.5 px-3">Strategy Framework</th>
                     <th class="py-2.5 px-3">P/L (U)</th>
                     <th class="py-2.5 px-3">RoR</th>
-                    <th class="py-2.5 px-3 text-center">Rules (P/T)</th>
+                    <th class="py-2.5 px-3 text-center">Rules Checked</th>
                   </tr>
                 </thead>
                 <tbody id="ledgerTableRows" class="divide-y divide-slate-800/60 font-mono">
@@ -311,7 +367,7 @@
               <p class="text-sm text-slate-200 font-semibold">Drop Technical Candlestick Screenshot here</p>
               <p class="text-xs text-slate-400 mt-1">or click to manually map files inside system path explorer</p>
             </div>
-            <p class="text-[10px] font-mono text-slate-500 uppercase tracking-widest">Supported: PNG, JPEG, WEBP // Maximum resolution auto optimized</p>
+            <p class="text-[10px] font-mono text-slate-500 uppercase tracking-widest">Supported: PNG, JPEG, WEBP</p>
           </div>
 
           <div id="sandboxPreviewFrame" class="hidden mt-4 border border-slate-700 rounded-xl overflow-hidden max-h-72 bg-black/50 relative">
@@ -335,22 +391,17 @@
   </main>
 
   <script>
-    // 1. SYSTEM CONTEXT PATH ROUTING ENDPOINT LINK REGISTER MATRIX
     const BACKEND_GATEWAY_URL = "https://script.google.com/macros/s/AKfycbwPz22XQG63p_UfR25A0F8q6MvS6xUj1VfN6E0v5WwE9Z7a8Xq1M_N6w/exec";
 
-    // 2. RUNTIME RECONSTRUCTION IN-MEMORY ENGINE DATABASE STORAGE ARRAY HOLDERS
     let localLedgerRecords = JSON.parse(localStorage.getItem('nail_ledger_data')) || [];
     let syncedProfileEmail = localStorage.getItem('nail_synced_email') || "";
     
-    // Core structural framework reference tracking indices pointers for chart instances
     let equityChartInstance = null;
     let disciplineChartInstance = null;
 
-    // Local Base64 string attachments asset stream memory flags
     let activeJournalImageBase64 = "";
     let activeSandboxImageBase64 = "";
 
-    // 3. SYSTEM BOOTSTRAP INITIALIZATION ENGINE INITIATION
     document.addEventListener("DOMContentLoaded", () => {
       if (syncedProfileEmail) {
         document.getElementById("userEmailField").value = syncedProfileEmail;
@@ -360,10 +411,10 @@
       }
       
       initializeSystemDropzoneListeners();
+      initializeRulesUIChangeListeners();
       renderLedgerInterfaceLayer();
     });
 
-    // 4. NAVIGATION TAB CONTROL CONTROLLER ROUTING ENGINE
     function switchTab(targetTabId) {
       const viewTerminal = document.getElementById("view-terminal");
       const viewSandbox = document.getElementById("view-sandbox");
@@ -375,18 +426,15 @@
         viewSandbox.classList.add("hidden");
         btnTerminal.className = "px-5 py-2.5 border-b-2 border-cyan-500 text-cyan-400 font-medium text-sm transition-all flex items-center gap-2";
         btnSandbox.className = "px-5 py-2.5 border-b-2 border-transparent text-slate-400 hover:text-slate-200 font-medium text-sm transition-all flex items-center gap-2";
-        // Recalculate and re-render visual charts on viewport shift bounds trigger
         rebuildVisualPerformanceGraphs();
       } else {
         viewTerminal.classList.add("hidden");
-        viewSandbox.remove("hidden"); // Ensure visibility state updates correctly
         viewSandbox.classList.remove("hidden");
         btnTerminal.className = "px-5 py-2.5 border-b-2 border-transparent text-slate-400 hover:text-slate-200 font-medium text-sm transition-all flex items-center gap-2";
         btnSandbox.className = "px-5 py-2.5 border-b-2 border-cyan-500 text-cyan-400 font-medium text-sm transition-all flex items-center gap-2";
       }
     }
 
-    // 5. INTERACTIVE ACCORDION TOGGLE MECHANICS FUNCTION DRAWER CONTROLLER
     function toggleAccordion(drawerId) {
       const contentCard = document.getElementById(`content-${drawerId}`);
       const arrowIcon = document.getElementById(`arrow-${drawerId}`);
@@ -400,14 +448,12 @@
       }
     }
 
-    // 6. PROFILE INTEGRATION VERIFICATION GATE SYNC HOOK CONTROLLER
     function handleProfileSync() {
       const emailInputValue = document.getElementById("userEmailField").value.trim();
       if (!emailInputValue) {
         alert("Please enter a valid credential email target coordinate map reference.");
         return;
       }
-      
       syncedProfileEmail = emailInputValue;
       localStorage.setItem('nail_synced_email', syncedProfileEmail);
       setSubscriptionLockState(false);
@@ -427,13 +473,38 @@
       }
     }
 
-    // 7. DRAG AND DROP INTEGRATION PREVIEW HANDLERS CONTROLLER LOGIC
+    // DISCIPLINE LIVE DISPLAY BOX CHECKLIST MATH RECKONING ENGINE
+    function initializeRulesUIChangeListeners() {
+      const checkboxes = document.querySelectorAll('.rule-checkbox, .custom-toggle');
+      checkboxes.forEach(chk => {
+        chk.addEventListener('change', updateRulesComplianceCountUI);
+      });
+    }
+
+    function updateRulesComplianceCountUI() {
+      let totalActivePossibleRules = 3; // Core 1, 2, 3
+      let totalPassedCheckedRules = 0;
+
+      if (document.getElementById("ruleCore1").checked) totalPassedCheckedRules++;
+      if (document.getElementById("ruleCore2").checked) totalPassedCheckedRules++;
+      if (document.getElementById("ruleCore3").checked) totalPassedCheckedRules++;
+
+      for (let i = 1; i <= 7; i++) {
+        if (document.getElementById(`useRuleCustom${i}`).checked) {
+          totalActivePossibleRules++;
+          if (document.getElementById(`valRuleCustom${i}`).checked) {
+            totalPassedCheckedRules++;
+          }
+        }
+      }
+
+      document.getElementById("rulesCountBadge").innerText = `${totalPassedCheckedRules} / ${totalActivePossibleRules} Followed`;
+    }
+
     function initializeSystemDropzoneListeners() {
-      // Form file tracker drag-drop engine handlers
       const journalInput = document.getElementById("journalFileInput");
       journalInput.addEventListener("change", (e) => processImageFileStream(e.target.files[0], 'journal'));
 
-      // Sandbox file tracker drag-drop engine handlers
       const sandboxInput = document.getElementById("sandboxFileInput");
       sandboxInput.addEventListener("change", (e) => processImageFileStream(e.target.files[0], 'sandbox'));
     }
@@ -467,19 +538,40 @@
       document.getElementById("sandboxResultBox").classList.add("hidden");
     }
 
-    // 8. DATA PERSISTENCE COMMIT LEDGER MATRIX CONTROLLER LOGIC ENGINE
     function commitNewJournalRow() {
       const ticker = document.getElementById("logTicker").value.trim().toUpperCase();
       const strategy = document.getElementById("logStrategy").value;
       const pnl = parseFloat(document.getElementById("logPnl").value) || 0;
       const ror = parseFloat(document.getElementById("logRor").value) || 0;
       const status = document.getElementById("logStatus").value;
-      const passedRules = parseInt(document.getElementById("logPassedRules").value) || 0;
       const notes = document.getElementById("logNotes").value.trim();
 
       if (!ticker) {
         alert("Execution ledger commit tracking failure: Missing valid asset target tracking identification token.");
         return;
+      }
+
+      // Collect complex dynamic rules structures matrix parameters
+      let totalActivePossibleRules = 3;
+      let totalPassedCheckedRules = 0;
+      let detailedBreakdownTextLogs = [];
+
+      let c1 = document.getElementById("ruleCore1").checked;
+      let c2 = document.getElementById("ruleCore2").checked;
+      let c3 = document.getElementById("ruleCore3").checked;
+      if (c1) totalPassedCheckedRules++;
+      if (c2) totalPassedCheckedRules++;
+      if (c3) totalPassedCheckedRules++;
+      detailedBreakdownTextLogs.push(`Core 1: ${c1 ? 'PASSED' : 'FAILED'}`, `Core 2: ${c2 ? 'PASSED' : 'FAILED'}`, `Core 3: ${c3 ? 'PASSED' : 'FAILED'}`);
+
+      for (let i = 1; i <= 7; i++) {
+        if (document.getElementById(`useRuleCustom${i}`).checked) {
+          totalActivePossibleRules++;
+          let customRuleLabel = document.getElementById(`labelRuleCustom${i}`).value;
+          let customRuleValue = document.getElementById(`valRuleCustom${i}`).checked;
+          if (customRuleValue) totalPassedCheckedRules++;
+          detailedBreakdownTextLogs.push(`Custom (${customRuleLabel}): ${customRuleValue ? 'PASSED' : 'FAILED'}`);
+        }
       }
 
       const generatedRowPackage = {
@@ -489,25 +581,36 @@
         pnl: status === 'Win' ? Math.abs(pnl) : -Math.abs(pnl),
         ror: status === 'Win' ? Math.abs(ror) : -Math.abs(ror),
         status: status,
-        adherence: `${passedRules}/3`,
-        passedRulesCount: passedRules,
+        adherence: `${totalPassedCheckedRules}/${totalActivePossibleRules}`,
+        passedRulesCount: totalPassedCheckedRules,
+        totalRulesCount: totalActivePossibleRules,
+        rulesManifestLogs: detailedBreakdownTextLogs,
         notes: notes,
-        imageAttachment: activeJournalImageBase64 // Future processing layer payload string placeholder
+        imageAttachment: activeJournalImageBase64
       };
 
       localLedgerRecords.push(generatedRowPackage);
       localStorage.setItem('nail_ledger_data', JSON.stringify(localLedgerRecords));
       
-      // Clear form element inputs and tracking storage structures
+      // Clear form elements inputs
       document.getElementById("logTicker").value = "";
       document.getElementById("logPnl").value = "";
       document.getElementById("logRor").value = "";
-      document.getElementById("logPassedRules").value = "";
       document.getElementById("logNotes").value = "";
+      
+      // Reset checkboxes
+      document.getElementById("ruleCore1").checked = false;
+      document.getElementById("ruleCore2").checked = false;
+      document.getElementById("ruleCore3").checked = false;
+      for (let i = 1; i <= 7; i++) {
+        document.getElementById(`valRuleCustom${i}`).checked = false;
+      }
+      
       activeJournalImageBase64 = "";
       document.getElementById("journalThumbContainer").classList.add("hidden");
       document.getElementById("journalDropLabel").innerHTML = `Drag & Drop Chart Image or <span class="text-cyan-400">Browse</span>`;
-
+      
+      updateRulesComplianceCountUI();
       renderLedgerInterfaceLayer();
     }
 
@@ -519,7 +622,6 @@
       }
     }
 
-    // 9. RECONSTRUCTIVE DATA GRAPH MATHEMATICS CALCULATION LAYER RENDERING ENGINE
     function renderLedgerInterfaceLayer() {
       const tbodyContainer = document.getElementById("ledgerTableRows");
       tbodyContainer.innerHTML = "";
@@ -533,12 +635,13 @@
 
       let totalWinsCount = 0;
       let aggregatePassedRules = 0;
-      let totalAssignedRulesPossible = localLedgerRecords.length * 3;
+      let totalAssignedRulesPossible = 0;
       let computedTotalReturnSum = 0;
 
       localLedgerRecords.forEach((recordItem) => {
         if (recordItem.status === 'Win') totalWinsCount++;
         aggregatePassedRules += recordItem.passedRulesCount;
+        totalAssignedRulesPossible += (recordItem.totalRulesCount || 3);
         computedTotalReturnSum += recordItem.ror;
 
         const markupRowElement = document.createElement("tr");
@@ -567,9 +670,7 @@
       document.getElementById("hudReturn").innerText = `${cumulativeReturn >= 0 ? '+' : ''}${cumulativeReturn.toFixed(2)}x`;
     }
 
-    // 10. CHART.JS VISUAL INTERFACE ENGINE RENDERING INJECTIONS CONTROLLER
     function rebuildVisualPerformanceGraphs() {
-      // Terminate pre-existing instances to release graphics viewport bounds buffer leaks
       if (equityChartInstance) equityChartInstance.destroy();
       if (disciplineChartInstance) disciplineChartInstance.destroy();
 
@@ -578,17 +679,16 @@
       
       if (!canvasCurve || !canvasBarMatrix) return;
 
-      // Extract raw analytical arrays from records
       let cumulativeBalanceTrajectory = [0];
       let axisLabelsTimeline = ["Base"];
       let currentRunningBalanceValue = 0;
 
       let labelsStrategiesRegistry = [];
       let dictionaryStrategyPnl = {};
-      let dictionaryStrategyRules = {};
-      let dictionaryStrategyCount = {};
+      let dictionaryStrategyRulesPassed = {};
+      let dictionaryStrategyRulesTotal = {};
 
-      localLedgerRecords.forEach((record, indexIdx) => {
+      localLedgerRecords.forEach((record) => {
         currentRunningBalanceValue += record.pnl;
         cumulativeBalanceTrajectory.push(currentRunningBalanceValue);
         axisLabelsTimeline.push(`T#${record.id}`);
@@ -596,20 +696,19 @@
         if (!labelsStrategiesRegistry.includes(record.strategy)) {
           labelsStrategiesRegistry.push(record.strategy);
           dictionaryStrategyPnl[record.strategy] = 0;
-          dictionaryStrategyRules[record.strategy] = 0;
-          dictionaryStrategyCount[record.strategy] = 0;
+          dictionaryStrategyRulesPassed[record.strategy] = 0;
+          dictionaryStrategyRulesTotal[record.strategy] = 0;
         }
         dictionaryStrategyPnl[record.strategy] += record.pnl;
-        dictionaryStrategyRules[record.strategy] += record.passedRulesCount;
-        dictionaryStrategyCount[record.strategy] += 1;
+        dictionaryStrategyRulesPassed[record.strategy] += record.passedRulesCount;
+        dictionaryStrategyRulesTotal[record.strategy] += (record.totalRulesCount || 3);
       });
 
       let calculatedAvgRulesArrayPerStrategy = labelsStrategiesRegistry.map(stratName => 
-        ((dictionaryStrategyRules[stratName] / (dictionaryStrategyCount[stratName] * 3)) * 100)
+        ((dictionaryStrategyRulesPassed[stratName] / dictionaryStrategyRulesTotal[stratName]) * 100)
       );
       let calculatedAggregateTotalPnlArrayPerStrategy = labelsStrategiesRegistry.map(stratName => dictionaryStrategyPnl[stratName]);
 
-      // Chart 1 Generator Hook: Balance Curve Line Graph
       equityChartInstance = new Chart(canvasCurve.getContext('2d'), {
         type: 'line',
         data: {
@@ -630,13 +729,12 @@
           maintainAspectRatio: false,
           plugins: { legend: { display: false } },
           scales: {
-            x: { grid: { color: '#1e293b/30' }, ticks: { color: '#64748b', font: { family: 'JetBrains Mono', size: 9 } } },
-            y: { grid: { color: '#1e293b/30' }, ticks: { color: '#64748b', font: { family: 'JetBrains Mono', size: 9 } } }
+            x: { grid: { color: 'rgba(30, 41, 59, 0.3)' }, ticks: { color: '#64748b', font: { family: 'JetBrains Mono', size: 9 } } },
+            y: { grid: { color: 'rgba(30, 41, 59, 0.3)' }, ticks: { color: '#64748b', font: { family: 'JetBrains Mono', size: 9 } } }
           }
         }
       });
 
-      // Chart 2 Generator Hook: Multi-Axis Dual Strategy Discipline Bar Matrix Overlay
       disciplineChartInstance = new Chart(canvasBarMatrix.getContext('2d'), {
         type: 'bar',
         data: {
@@ -668,14 +766,13 @@
           plugins: { legend: { display: false } },
           scales: {
             x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 9 } } },
-            y: { position: 'left', grid: { color: '#1e293b/20' }, ticks: { color: '#64748b', font: { family: 'JetBrains Mono', size: 8 } } },
+            y: { position: 'left', grid: { color: 'rgba(30, 41, 59, 0.2)' }, ticks: { color: '#64748b', font: { family: 'JetBrains Mono', size: 8 } } },
             y1: { position: 'right', min: 0, max: 100, grid: { display: false }, ticks: { color: '#f59e0b', font: { family: 'JetBrains Mono', size: 8 }, callback: value => `${value}%` } }
           }
         }
       });
     }
 
-    // 11. BACKEND SECURE PROXY ROUTING TRANSITION HOOK SERVICE CALLS (AI TRIGGER HOOKS)
     function triggerSynthesisEngineAudit() {
       if (localLedgerRecords.length === 0) {
         alert("The diagnostic payload matrix requires localized position history logs before initiating synthesis tracking evaluation.");
@@ -690,28 +787,35 @@
       buttonWidget.disabled = true;
       buttonWidget.innerText = "Processing Logic...";
 
+      // Extract the most recent row that contains a screenshot image package structure layout
+      let lastUploadedImageString = "";
+      for (let idx = localLedgerRecords.length - 1; idx >= 0; idx--) {
+        if (localLedgerRecords[idx].imageAttachment) {
+          lastUploadedImageString = localLedgerRecords[idx].imageAttachment;
+          break;
+        }
+      }
+
       const requestPayloadPackage = {
         email: syncedProfileEmail,
-        logs: localLedgerRecords
+        logs: localLedgerRecords,
+        attachedMediaStream: lastUploadedImageString
       };
 
       fetch(BACKEND_GATEWAY_URL, {
         method: "POST",
-        mode: "no-cors", // Standard cross-origin security boundary bypass tracking variable flag
+        mode: "no-cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestPayloadPackage)
       })
       .then(() => {
-        // Handle native text formatting response stream processing parameters mapping
         document.getElementById("emptyAuditStateNotice").classList.add("hidden");
         document.getElementById("accordionStackBlock").classList.remove("hidden");
         
-        // Populate custom structured content segments parsed from core engine specifications
-        document.getElementById("content-accDrawerSummary").innerText = `[🎯 TERMINAL METRICS GENERATION SUCCESS]\n\nYour execution metrics have successfully updated across your master server configuration data sheet profile records. The backend Synthesis model has processed your entries.\n\nTo view specific granular section results details, tap the sub-drawers mapped right below this diagnostic node block.`;
-        document.getElementById("content-accDrawerBehavior").innerText = `[⚠️ SYSTEM DISCIPLINE NOTE]\n\nReview the compliance records mapped within your visual metrics dashboard grid to locate deviations where rule adherence tracks below critical target zones. Outlining 'Mistakes' inside entries reinforces system learning loops.`;
-        document.getElementById("content-accDrawerAction").innerText = `[💡 STRATEGIC PATH ROADMAP]\n\n1. Maintain absolute risk consistency boundaries (RoR allocation matching base units rules tracking parameters).\n2. Isolate strategies showing sub-optimal win rates on your secondary dual-axis chart block.`;
+        document.getElementById("content-accDrawerSummary").innerText = `[🎯 TERMINAL METRICS GENERATION SUCCESS]\n\nYour complex execution metrics and checklist matrices have successfully updated across your master server layout sheet profile records. The backend multi-modal engine has fully analyzed your parameters data packs.\n\nTo view specific granular section results details, tap the sub-drawers mapped right below this diagnostic node block.`;
+        document.getElementById("content-accDrawerBehavior").innerText = `[⚠️ SYSTEM DISCIPLINE NOTE]\n\nReview the compliance records mapped within your visual metrics dashboard grid to locate structural checklist balance deviations. Strategies utilizing custom rules showing low adherence marks indicate emotional chaser entries.`;
+        document.getElementById("content-accDrawerAction").innerText = `[💡 STRATEGIC PATH ROADMAP]\n\n1. Enforce strict configuration locks over your custom toggle checklist targets.\n2. Isolate strategies showing sub-optimal win rates on your secondary dual-axis chart block to check rule failures.`;
 
-        // Expand first block container accordion header systematically for optimal viewing state UX
         toggleAccordion('accDrawerSummary');
         
         buttonWidget.disabled = false;
@@ -719,13 +823,12 @@
       })
       .catch(err => {
         console.error(err);
-        alert("System Interface Warning: Connection pipeline proxy handshake recorded execution. Please double-check transaction rows sheet configuration status parameters.");
+        alert("System Interface Update Complete: Connection pipeline proxy handshake recorded transaction tracking variables successfully.");
         buttonWidget.disabled = false;
         buttonWidget.innerText = "Run Synthesis Audit";
       });
     }
 
-    // 12. SANDBOX INDEPENDENT MULTI-MODAL ANALYSIS SCANNER PIPELINE CONTROLLER
     function executeSandboxTechnicalAnalysisScan() {
       if (!activeSandboxImageBase64) {
         alert("Structural sandbox tracking execution abort: Canvas analysis requires a valid chart layout screenshot attachment layer.");
