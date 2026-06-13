@@ -34,7 +34,8 @@
 
   <header class="border-b border-slate-800/80 bg-[#0c1220]/90 backdrop-blur sticky top-0 z-50 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
     <div class="flex items-center space-x-3">
-      <div class="h-9 w-9 rounded-lg bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center font-bold tracking-tighter text-white select-none shadow-md">N</div>
+      <img src="https://raw.githubusercontent.com/vikaspandey47/nail-journal/main/Gemini_Generated_Image_2alghs2alghs2alg.png" 
+           alt="NAIL Logo" class="h-10 w-10 rounded-xl border border-slate-700/50 object-cover shadow-md shadow-cyan-500/10">
       <div>
         <h1 class="text-md font-bold tracking-tight text-white flex items-center gap-2">
           NAIL PERFORMANCE SYSTEM <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded">V2.5 Terminal</span>
@@ -352,9 +353,13 @@
     <div id="view-sandbox" class="hidden space-y-6">
       <div class="bg-[#0e1726] border border-slate-800/80 rounded-2xl p-6 max-w-3xl mx-auto space-y-6 relative">
         
-        <div class="text-center max-w-md mx-auto space-y-2">
-          <h2 class="text-lg font-bold text-white tracking-tight">AI Technical Chart Structure Sandbox</h2>
-          <p class="text-xs text-slate-400">Upload a clean screenshot of any stock or option candlestick asset structure layout. NAIL will calculate institutional entry, stop loss, and exit target brackets instantly.</p>
+        <div class="text-center max-w-md mx-auto space-y-3">
+          <img src="https://raw.githubusercontent.com/vikaspandey47/nail-journal/main/Gemini_Generated_Image_2alghs2alghs2alg.png" 
+               alt="NAIL Sandbox" class="h-14 w-14 rounded-2xl mx-auto border border-slate-700/60 shadow-xl shadow-cyan-500/5 object-cover">
+          <div>
+            <h2 class="text-lg font-bold text-white tracking-tight">AI Technical Chart Structure Sandbox</h2>
+            <p class="text-xs text-slate-400">Upload a clean screenshot of any stock or option candlestick asset structure layout. NAIL will calculate institutional entry, stop loss, and exit target brackets instantly.</p>
+          </div>
         </div>
 
         <div id="sandboxDropZone" class="border-2 border-dashed border-slate-700 hover:border-cyan-500 rounded-2xl p-8 text-center bg-[#0c1220]/60 transition-all cursor-pointer relative group">
@@ -382,7 +387,7 @@
           Execute Structural Scanner Evaluation
         </button>
 
-        <div id="sandboxResultBox" class="hidden border border-slate-800 bg-[#090f1a] rounded-xl p-4 font-mono text-xs text-slate-300 leading-relaxed whitespace-pre-wrap">
+        <div id="sandboxResultBox" class="hidden border border-slate-800 bg-[#090f1a] rounded-xl p-5 font-mono text-xs text-slate-300 leading-relaxed whitespace-pre-line shadow-inner border-l-4 border-l-cyan-500">
           </div>
 
       </div>
@@ -391,7 +396,6 @@
   </main>
 
   <script>
-    // 1. DYNAMIC SYSTEM CONNECTOR TARGET ENDPOINT URL HOOK
     const BACKEND_GATEWAY_URL = "https://script.google.com/macros/s/AKfycbw1ouxw9o5jzddyDM3UTSBpxrTJrW8h9fs8ODEPKk-BqDjnAtRxmk1_XF7K-FEJ1xH4aw/exec";
 
     let localLedgerRecords = JSON.parse(localStorage.getItem('nail_ledger_data')) || [];
@@ -668,7 +672,6 @@
       document.getElementById("hudReturn").innerText = `${cumulativeReturn >= 0 ? '+' : ''}${cumulativeReturn.toFixed(2)}x`;
     }
 
-    // 3. CHART.JS GRAPH INTERFACE COMPILERS
     function rebuildVisualPerformanceGraphs() {
       if (equityChartInstance) equityChartInstance.destroy();
       if (disciplineChartInstance) disciplineChartInstance.destroy();
@@ -772,7 +775,6 @@
       });
     }
 
-    // 4. FIXED REAL-TIME API PARSING CONTROLLERS (NO MORE MOCK REPETITIVE MESSAGES)
     function triggerSynthesisEngineAudit() {
       if (localLedgerRecords.length === 0) {
         alert("The diagnostic payload matrix requires localized position history logs before initiating synthesis tracking evaluation.");
@@ -801,7 +803,6 @@
         attachedMediaStream: lastUploadedImageString
       };
 
-      // FIXED: Standard payload tracking processing using standard fetch request configurations
       fetch(BACKEND_GATEWAY_URL, {
         method: "POST",
         headers: { "Content-Type": "text/plain" }, 
@@ -817,7 +818,6 @@
           return;
         }
 
-        // Read real text string directly parsed via cloud generation model endpoint
         let parsedAiOutput = "";
         try {
           const cloudParsedObj = JSON.parse(resData.raw);
@@ -829,12 +829,10 @@
         document.getElementById("emptyAuditStateNotice").classList.add("hidden");
         document.getElementById("accordionStackBlock").classList.remove("hidden");
         
-        // Dynamically split or populate data rows based on system configurations
         document.getElementById("content-accDrawerSummary").innerText = parsedAiOutput;
         document.getElementById("content-accDrawerBehavior").innerText = `[📊 GRAPH ANALYTICS SUMMARY]\n\nReview your live performance curve matrices above. Your active strategy return indices calculate cumulative gains across logged sessions variables dynamically.`;
         document.getElementById("content-accDrawerAction").innerText = `[💡 IMMEDIATE ROADMAP CONSTRAINTS]\n\n1. Maintain absolute risk consistency allocation models across all future entries.\n2. Isolate strategies showing sub-optimal win rates on your secondary dual-axis chart block to pinpoint rule adjustments.`;
 
-        // Reset accordion views layout states safely
         document.getElementById("content-accDrawerSummary").classList.remove("hidden");
         document.getElementById("arrow-accDrawerSummary").classList.add("rotate-180");
         
@@ -871,7 +869,6 @@
         imageStreamPayload: activeSandboxImageBase64
       };
 
-      // FIXED: Swapped no-cors mode out for full JSON processing to expose real-time Gemini results
       fetch(BACKEND_GATEWAY_URL, {
         method: "POST",
         headers: { "Content-Type": "text/plain" },
@@ -886,7 +883,6 @@
           return;
         }
 
-        // Dynamically unpack pure real-time vision insights
         let parsedVisionOutput = "";
         try {
           const cloudParsedObj = JSON.parse(resData.raw);
